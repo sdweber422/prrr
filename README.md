@@ -7,6 +7,10 @@
 
 ## Development
 
+```
+npm install
+npm run build
+```
 
 ### Setup
 
@@ -30,7 +34,7 @@ NODE_ENV=development
 PORT=3000
 GITHUB_CLIENT_ID=<FOLLOW GITHUB INSTRUCTIONS>
 GITHUB_CLIENT_SECRET=<FOLLOW GITHUB INSTRUCTIONS>
-GITHUB_CALLBACK=<FOLLOW GITHUB INSTRUCTIONS>
+GITHUB_CALLBACK=http://localhost:3000/auth/github/callback
 SESSION_KEY=thiscanbeanyoldrandomstring
 ```
 
@@ -38,6 +42,8 @@ SESSION_KEY=thiscanbeanyoldrandomstring
 github oauth*
 
 ### Database
+
+*NOTE: you need to run `npm run build` before you can run `knex` commands
 
 ```sh
 createdb prrr-development
