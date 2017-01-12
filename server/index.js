@@ -4,7 +4,7 @@ import express from 'express'
 import logger from 'morgan'
 import bodyParser from 'body-parser'
 import passport from 'passport'
-import cookieSession from 'cookie-session'
+import session from 'express-session'
 import http from 'http'
 
 const publicPath = path.resolve(__dirname, '../public')
@@ -15,10 +15,20 @@ if (process.env.NODE_ENV !== 'test') server.use(logger('dev'))
 if (process.env.NODE_ENV === 'test')
   process.env.SESSION_KEY = 'FAKE_TEST_SESSION_KEY'
 
-server.use(cookieSession({
+server.sessionMiddleware = session({
   name: 'session',
-  keys: [process.env.SESSION_KEY]
-}))
+  secret: process.env.SESSION_KEY,
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,
+  }
+})
+server.use(server.sessionMiddleware)
+// server.use(cookieSession({
+//   name: 'session',
+//   keys: [process.env.SESSION_KEY]
+// }))
 server.use(passport.initialize());
 server.use(passport.session());
 server.use(express.static(publicPath))
@@ -43,6 +53,7 @@ server.start = function(port, callback){
   console.log(`http://localhost:${port}/`)
   const httpServer = http.createServer(server)
   httpServer.listen(port, callback)
+  require('./socket')(server, httpServer)
   return httpServer
 }
 

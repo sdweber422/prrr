@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import state from '../state'
-import '../actions/loadSession'
-import '../actions/startPolingForPrrrs'
 import Router from '../Router'
 import InspectObject from './utils/InspectObject'
 

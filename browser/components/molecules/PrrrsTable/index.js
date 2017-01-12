@@ -4,7 +4,6 @@ import Icon from '../../atoms/Icon'
 import Date from '../../atoms/Date'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
-import claimPrrr from '../../../actions/claimPrrr'
 import archivePrrr from '../../../actions/archivePrrr'
 import './index.sass'
 

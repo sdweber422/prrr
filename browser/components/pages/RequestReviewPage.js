@@ -51,13 +51,7 @@ class CreatePrrrForm extends Component {
     const { owner, repo, number } = this.state
     this.setState({creating: true})
     createPrrr({owner, repo, number})
-      .then(_ => {
-        this.setState({creating: false})
-        this.context.redirectTo('/')
-      })
-      .catch(error => {
-        this.setState({error, creating: false})
-      })
+    this.context.redirectTo('/')
   }
 
   render(){

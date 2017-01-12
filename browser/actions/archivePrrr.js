@@ -1,8 +1,5 @@
-import request from '../request'
-import state from '../state'
-import loadPrrrs from './loadPrrrs'
+import socket from '../socket'
 
 export default function archivePrrr(prrrId) {
-  return request('post', `/api/pull-request-review-requests/${prrrId}/archive`)
-    .then(loadPrrrs)
+  socket.emit('archive', {id:prrrId})
 }

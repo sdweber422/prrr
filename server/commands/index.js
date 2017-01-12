@@ -147,13 +147,15 @@ export default class Commands {
       .whereNull('completed_at')
   }
 
-  archivePrrr(purrId){
+  archivePrrr(prrrId){
     return this.knex
       .table('pull_request_review_requests')
       .update({
         archived_at: new Date,
       })
-      .where('id', purrId)
+      .where('id', prrrId)
+      .returning('*')
+      .then(firstRecord)
   }
 
   completePrrr(prrrId){

@@ -14,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "cookie-session": "^2.0.0-alpha.2",
     "dotenv": "^2.0.0",
+    "express-session": "^1.14.2",
     "font-awesome": "^4.7.0",
     "github": "^7.1.0",
     "knex": "^0.12.6",
@@ -29,6 +29,7 @@
     "simple-react-router": "0.0.13",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
+    "socket.io": "^1.7.2",
     "visibilityjs": "^1.2.4",
     "webappatron": "github:deadlyicon/webappatron#e59ede1"
   },
