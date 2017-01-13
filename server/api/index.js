@@ -22,6 +22,14 @@ router.post('/logout', (req, res, next) => {
 });
 
 
+router.get('/metrics/:week', (req, res, next) => {
+  req.queries.metricsForWeek(req.params.week)
+    .then(metrics => {
+      res.json(metrics)
+    })
+    .catch(next)
+});
+
 router.get('/pull-request-review-requests', (req, res, next) => {
   req.queries.getPrrrs()
     .then(prrrs => {

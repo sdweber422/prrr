@@ -1,5 +1,6 @@
 import knex from '../knex'
 import Github from '../Github'
+import Metrics from './metrics'
 
 export default class Queries {
 
@@ -69,4 +70,7 @@ export default class Queries {
       .first()
   }
 
+  metricsForWeek(week){
+    return new Metrics({week, queries: this}).load()
+  }
 }

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import Button from '../../atoms/Button'
+import Link from '../../atoms/Link'
 import Avatar from '../../atoms/Avatar'
 import './index.sass'
 import favicon from '../../../images/favicon.ico'
@@ -20,6 +21,7 @@ export default class Navbar extends Component {
         </Button>
         &nbsp;
         <Button className="Navbar-button-add-prrr" href="/request"> Add a Prrr </Button>
+        <Link href="/metrics">Metrics</Link>
       </div>
       <div>
         <p className="Navbar-title"> Prrr </p>
