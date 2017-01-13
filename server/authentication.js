@@ -61,4 +61,20 @@ router.get('/auth/github/callback',
   }
 );
 
+if(process.env.NODE_ENV === 'test') {
+  router.get('/__login/:githubId', (request, response) => {
+    const { githubId } = request.params
+    request.session = {
+      passport: {
+        user: {
+          github_id: Number(githubId)
+        }
+      }
+    }
+    response.send(`
+      logged in as ${githubId}
+    `)
+  })
+}
+
 module.exports = router
