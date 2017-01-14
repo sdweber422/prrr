@@ -24,7 +24,8 @@ const scheduleNextLoad = function(){
   timeout = setTimeout(pullForPrrs, POLLING_DELAY)
 }
 
-pullForPrrs()
+// pullForPrrs()
+loadPrrrs()
 
 
 window.DEBUG = window.DEBUG || {}
