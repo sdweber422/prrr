@@ -14,7 +14,10 @@ export default class PendingPrrrs extends Component {
 
   constructor(props){
     super(props)
-    this.state = {error: null}
+    this.state = {
+      error: null,
+      errorTimeoutId: null
+    }
   }
 
   claimPrrr(prrr){
@@ -28,7 +31,20 @@ export default class PendingPrrrs extends Component {
         console.warn('Claim Error')
         console.error(error)
         this.setState({error})
+        this.scheduleErrorRemoval()
       })
+  }
+
+  scheduleErrorRemoval() {
+    if (this.state.errorTimeoutId) {
+      clearTimeout(this.state.errorTimeoutId)
+    }
+
+    const errorTimeoutId = setTimeout(() => {
+      this.setState({error: null})
+    }, 5000)
+
+    this.setState({errorTimeoutId})
   }
 
   renderAdditionalHeaders(){
