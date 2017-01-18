@@ -121,19 +121,25 @@ export default class Commands {
         if (!ownerUser)
           throw new Error(`unable to add ${this.currentUser.github_username} to ${prrr.owner}/${prrr.repo} because ${prrr.owner} does not have a Prrr account`)
 
-        const github = this.as(ownerUser).github
-        return github.repos.checkCollaborator({
+        const ownerGithub = this.as(ownerUser).github
+        return ownerGithub.repos.checkCollaborator({
           owner:    prrr.owner,
           repo:     prrr.repo,
           username: this.currentUser.github_username,
         })
         .catch(error => {
           if (error.code !== 404) throw error
-          return github.repos.addCollaborator({
+          return ownerGithub.repos.addCollaborator({
             owner:      prrr.owner,
             repo:       prrr.repo,
             username:   this.currentUser.github_username,
             permission: 'push',
+          })
+          .then( _ => {
+            return this.github.activity.unwatchRepo({
+              owner: prrr.owner,
+              repo: prrr.repo,
+            })
           })
         })
       })
