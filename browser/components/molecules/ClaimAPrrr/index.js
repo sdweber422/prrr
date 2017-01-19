@@ -5,8 +5,8 @@ import GithubUsername from '../../atoms/GithubUsername'
 import claimPrrr from '../../../actions/claimPrrr'
 import completePrrr from '../../../actions/completePrrr'
 import unclaimPrrr from '../../../actions/unclaimPrrr'
+import Timer from '../../atoms/Timer'
 import './index.sass'
-
 
 export default class ClaimAPrrr extends Component {
   static propTypes = {
@@ -48,6 +48,9 @@ class UserClaimedAPrrr extends Component {
         <br/>
         <span> for </span>
         <GithubUsername username={claimedPrrr.requested_by} currentUser={currentUser} />
+      </div>
+      <div>
+        <Timer claimedPrrr={claimedPrrr} />
       </div>
       <div className="ClaimAPrrr-UserClaimedAPrrr-Buttons">
         <Button
