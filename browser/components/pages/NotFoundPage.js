@@ -6,42 +6,33 @@ import sadCat4 from '../../images/sadcat4.gif'
 import Link from '../atoms/Link'
 import './NotFoundPage.sass'
 
+const sadCats = [sadCat1, sadCat2, sadCat3, sadCat4]
+const randomSadCat = _ =>
+  sadCats[ Math.floor( Math.random() * sadCats.length )]
+
 export default class NotFoundPage extends Component {
 
-  whichSadCat() {
-    let num = Math.floor( Math.random() * 4 )
-    if ( num === 0 ) {
-      return sadCat1
-    }
-    else if ( num === 1 ) {
-      return sadCat2
-    }
-    else if ( num === 2 ) {
-      return sadCat3
-    }
-    else {
-      return sadCat4
+  constructor(props){
+    super(props)
+    this.state = {
+      sadCat: randomSadCat()
     }
   }
 
   render(){
-    // console.log("hmmmm", this.whichSadCat())
     return <div className="NotFoundPage">
-      <div className="header">
-        <Link className="hompageLink" href="/"><h2>Home</h2></Link>
-      </div>
-
-      <div className="PageMain">
-        <h1 className="NotFound">Page Not Found</h1>
-        <h2>{this.props.location.pathname}</h2>
-        <img src={ this.whichSadCat() } className='SadCat'/>
-      </div>
-      <div className="links">
-        <div className="SendIssue">
-          <h4 className="SomethingWrong">Think you got this error by mistake?</h4>
-          <Link className="hompageLink" href="https://github.com/GuildCrafts/prrr/issues/new">Let us know!</Link>
-        </div>
-      </div>
+      <h1 className="NotFoundPage-NotFound">Page Not Found</h1>
+      <h2>{this.props.location.pathname}</h2>
+      <img className="NotFoundPage-sadcat" src={this.state.sadCat}/>
+      <p>
+        <span>Maybe you should </span>
+        <Link href="/">Go Home</Link>
+        <span>?</span>
+      </p>
+      <p>
+        <span>Or if you think you got this error by mistake </span>
+        <Link href="https://github.com/GuildCrafts/prrr/issues/new">Click here to file and issue!</Link>
+      </p>
     </div>
   }
 }
