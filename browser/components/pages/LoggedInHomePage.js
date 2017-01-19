@@ -4,6 +4,7 @@ import Layout from '../molecules/Layout'
 import InspectObject from '../utils/InspectObject'
 import PendingPrrrs from '../molecules/PendingPrrrs'
 import MyRequestedPrrrs from '../molecules/MyRequestedPrrrs'
+import MyReviewedPrrrs from '../molecules/MyReviewedPrrrs'
 import ClaimedPrrrs from '../molecules/ClaimedPrrrs'
 
 export default class LoggedInHomePage extends Component {
@@ -26,6 +27,11 @@ export default class LoggedInHomePage extends Component {
       <MyRequestedPrrrs
         currentUser={session.user}
         prrrs={prrrs}
+      />
+      <h1>My Reviewed Prrrs</h1>
+        <MyReviewedPrrrs
+          currentUser={session.user}
+          prrrs={prrrs}
       />
     </Layout>
   }
