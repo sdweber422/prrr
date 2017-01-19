@@ -14,10 +14,10 @@ export default class LoggedOutHomePage extends Component {
           Prrr
           <img src={favicon} className="LoggedOutHomePage-icon" />
         </span>
-        <p className="LoggedOutHomePage-info"> The Pull Request Review Request Tool </p>
+        <div className="LoggedOutHomePage-info">Pull Request Review Request</div>
       </div>
       <div className="LoggedOutHomePage-SectionTwo">
-        <Button href="/login" externalLink>Login or Signup via Github</Button>
+        <Button href="/login" externalLink>Login via Github</Button>
       </div>
       <div className="LoggedOutHomePage-SectionThree">
         <p> Review Together. </p>
