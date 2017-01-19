@@ -10,8 +10,10 @@ export default class LoggedOutHomePage extends Component {
   render(){
     return <div className="LoggedOutHomePage">
       <div className="LoggedOutHomePage-SectionOne">
-        Prrr
-        <img src={favicon} className="LoggedOutHomePage-icon" />
+        <span className="LoggedOutHomePage-title">
+          Prrr
+          <img src={favicon} className="LoggedOutHomePage-icon" />
+        </span>
         <p className="LoggedOutHomePage-info"> The Pull Request Review Request Tool </p>
       </div>
       <div className="LoggedOutHomePage-SectionTwo">
