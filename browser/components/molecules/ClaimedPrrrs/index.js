@@ -56,7 +56,10 @@ export default class ClaimedPrrrs extends Component {
 
   render(){
     const prrrs = this.props.prrrs
-      .filter(prrr => prrr.claimed_by)
+      .filter(prrr =>
+        prrr.claimed_at &&
+        !prrr.completed_at
+      )
       .sort((a, b) =>
         moment(b.claimed_at).valueOf() -
         moment(a.claimed_at).valueOf()
