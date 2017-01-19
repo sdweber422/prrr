@@ -27,7 +27,7 @@ export default class PrrrsTable extends Component {
       const requestByCurrentUser = prrr.requested_by === currentUser.github_username
       const href = `https://github.com/${prrr.owner}/${prrr.repo}/pull/${prrr.number}`
       return <tr key={prrr.id}>
-        <td>
+        <td className="PrrrsTable-pr">
           <Link href={href} target="_blank">
             {prrr.owner}/{prrr.repo}
           </Link>
@@ -36,14 +36,14 @@ export default class PrrrsTable extends Component {
             {prrr.number}
           </Link>
         </td>
-        <td>
+        <td className="PrrrsTable-requested">
           <span>by&nbsp;</span>
           <GithubUsername username={prrr.requested_by} currentUser={currentUser} />
           <span>&nbsp;</span>
           <Date fromNow date={prrr.created_at} />
         </td>
         {renderAdditionalCells(prrr)}
-        <td>
+        <td className="PrrrsTable-archive">
           <Button onClick={_ => confirmArchivePrrr(href, prrr)} disabled={!requestByCurrentUser}>
             <Icon type="times" />
           </Button>
@@ -53,10 +53,10 @@ export default class PrrrsTable extends Component {
     return <table className={`PrrrsTable ${this.props.className||''}`}>
       <thead>
         <tr>
-          <th>Pull Request</th>
-          <th>Requested</th>
+          <th className="PrrrsTable-pr">Pull Request</th>
+          <th className="PrrrsTable-requested">Requested</th>
           {renderAdditionalHeaders()}
-          <th></th>
+          <th className="PrrrsTable-archive"></th>
         </tr>
       </thead>
       <tbody>
