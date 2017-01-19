@@ -109,9 +109,13 @@ export default class Commands {
       .then(firstRecord)
   }
 
-  claimPrrr(prrrId){
-    return this.queries.getPrrrById(prrrId)
-      .then(_ => this.markPullRequestAsClaimed(prrrId))
+  claimPrrr(){
+    return this.queries.getNextPendingPrrr()
+      .then(prrr =>
+        this.addCurrentUserToPrrrRepo(prrr)
+          .then(_ => this.sendReviewRequest(prrr))
+          .then(_ => this.markPullRequestAsClaimed(prrr.id))
+      )
   }
 
   unclaimPrrr(prrrId){

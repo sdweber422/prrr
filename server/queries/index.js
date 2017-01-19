@@ -67,6 +67,21 @@ export default class Queries {
       })
   }
 
+  getNextPendingPrrr(){
+    return this.knex
+      .select('*')
+      .from('pull_request_review_requests')
+      .orderBy('created_at', 'asc')
+      .where({
+        archived_at: null,
+        completed_at: null,
+        claimed_by: null,
+        claimed_at: null,
+      })
+      .whereNot('requested_by', this.currentUser.github_username)
+      .first()
+  }
+
   getPrrrById(prrrId){
     return this.knex
       .select('*')
