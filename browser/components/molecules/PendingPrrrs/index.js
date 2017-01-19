@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
+import Icon from '../../atoms/Icon'
 import Link from '../../atoms/Link'
 import Button from '../../atoms/Button'
 import PrrrsTable from '../PrrrsTable'
 import ErrorMessage from '../../atoms/ErrorMessage'
 import claimPrrr from '../../../actions/claimPrrr'
+import './index.sass'
 
 export default class PendingPrrrs extends Component {
   static propTypes = {
@@ -56,10 +58,16 @@ export default class PendingPrrrs extends Component {
   renderAdditionalCells = (prrr) => {
     const { currentUser } = this.props
     const disabled = prrr.requested_by === currentUser.github_username
+    const requestByCurrentUser = prrr.requested_by === currentUser.github_username
     return [
-      <td key="actions">
+      <td key="claim">
         <Button onClick={_ => this.claimPrrr(prrr)} disabled={disabled}>
           Claim
+        </Button>
+      </td>,
+      <td key="archive" className="PendingPrrrs-archive">
+        <Button onClick={_ => confirmArchivePrrr(href, prrr)} disabled={!requestByCurrentUser}>
+          <Icon type="times" />
         </Button>
       </td>,
     ]
@@ -84,4 +92,12 @@ export default class PendingPrrrs extends Component {
       />
     </div>
   }
+}
+
+
+
+
+function confirmArchivePrrr(href, prrr){
+  const message = `Are you sure you want to archive your\n\nPull Request Review Request for\n\n${href}`
+  if (confirm(message)) archivePrrr(prrr.id)
 }

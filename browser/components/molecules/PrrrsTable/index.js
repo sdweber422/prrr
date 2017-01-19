@@ -24,7 +24,6 @@ export default class PrrrsTable extends Component {
       renderAdditionalHeaders,
     } = this.props
     const rows = prrrs.map(prrr => {
-      const requestByCurrentUser = prrr.requested_by === currentUser.github_username
       const href = `https://github.com/${prrr.owner}/${prrr.repo}/pull/${prrr.number}`
       return <tr key={prrr.id}>
         <td className="PrrrsTable-pr">
@@ -43,11 +42,6 @@ export default class PrrrsTable extends Component {
           <Date fromNow date={prrr.created_at} />
         </td>
         {renderAdditionalCells(prrr)}
-        <td className="PrrrsTable-archive">
-          <Button onClick={_ => confirmArchivePrrr(href, prrr)} disabled={!requestByCurrentUser}>
-            <Icon type="times" />
-          </Button>
-        </td>
       </tr>
     })
     return <table className={`PrrrsTable ${this.props.className||''}`}>
@@ -56,7 +50,6 @@ export default class PrrrsTable extends Component {
           <th className="PrrrsTable-pr">Pull Request</th>
           <th className="PrrrsTable-requested">Requested</th>
           {renderAdditionalHeaders()}
-          <th className="PrrrsTable-archive"></th>
         </tr>
       </thead>
       <tbody>
@@ -64,9 +57,4 @@ export default class PrrrsTable extends Component {
       </tbody>
     </table>
   }
-}
-
-function confirmArchivePrrr(href, prrr){
-  const message = `Are you sure you want to archive your\n\nPull Request Review Request for\n\n${href}`
-  if (confirm(message)) archivePrrr(prrr.id)
 }

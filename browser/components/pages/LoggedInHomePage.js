@@ -3,6 +3,7 @@ import Button from '../atoms/Button'
 import Layout from '../molecules/Layout'
 import InspectObject from '../utils/InspectObject'
 import PendingPrrrs from '../molecules/PendingPrrrs'
+import MyRequestedPrrrs from '../molecules/MyRequestedPrrrs'
 import ClaimedPrrrs from '../molecules/ClaimedPrrrs'
 
 export default class LoggedInHomePage extends Component {
@@ -18,6 +19,11 @@ export default class LoggedInHomePage extends Component {
 
       <h1>Claimed Pull Requests:</h1>
       <ClaimedPrrrs
+        currentUser={session.user}
+        prrrs={prrrs}
+      />
+      <h1>My Requested Prrrs</h1>
+      <MyRequestedPrrrs
         currentUser={session.user}
         prrrs={prrrs}
       />

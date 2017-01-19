@@ -1,4 +1,5 @@
 import knex from '../knex'
+import moment from 'moment'
 import Github from '../Github'
 import Metrics from './metrics'
 
@@ -27,14 +28,42 @@ export default class Queries {
       .first()
   }
 
-  getPrrrs(){
+  getPendingPrrrs(){
     return this.knex
       .select('*')
       .from('pull_request_review_requests')
       .orderBy('created_at', 'desc')
       .where({
         archived_at: null,
-        completed_at: null,
+      })
+  }
+
+  getMyPrrs(){
+    return this.knex
+      .select('*')
+      .from('pull_request_review_requests')
+      .orderBy('created_at', 'desc')
+      .where({
+        requested_by: this.currentUser.github_username,
+      })
+      .orWhere({
+        claimed_by: this.currentUser.github_username,
+      })
+  }
+
+  uniquePrrrs( prrrs ){
+    const prrrsObject = {}
+    prrrs.forEach(prrr => { prrrsObject[prrr.id] = prrr })
+    return Object.keys(prrrsObject).map(k => prrrsObject[k])
+  }
+
+  getPrrrs(){
+    return Promise.all([
+      this.getPendingPrrrs(),
+      this.getMyPrrs()
+    ])
+      .then(([pendingPrrrs, myPrrrs]) => {
+        return this.uniquePrrrs(pendingPrrrs.concat(myPrrrs))
       })
   }
 
