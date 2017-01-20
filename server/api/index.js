@@ -52,8 +52,8 @@ router.post('/pull-request-review-requests', (req, res, next) => {
 
 router.post('/pull-request-review-requests/claim', (req, res, next) => {
   req.commands.claimPrrr()
-    .then(_ => {
-      res.json({claimed: true})
+    .then(prrr => {
+      res.json({claimed: true, prrr})
     })
     .catch(next)
 });
