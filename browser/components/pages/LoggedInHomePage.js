@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../molecules/Layout'
-import InspectObject from '../utils/InspectObject'
-import PendingPrrrs from '../molecules/PendingPrrrs'
 import MyRequestedPrrrs from '../molecules/MyRequestedPrrrs'
 import MyReviewedPrrrs from '../molecules/MyReviewedPrrrs'
-import ClaimedPrrrs from '../molecules/ClaimedPrrrs'
 import ClaimAPrrr from '../molecules/ClaimAPrrr'
 
 export default class LoggedInHomePage extends Component {
@@ -17,17 +14,6 @@ export default class LoggedInHomePage extends Component {
         prrrs={prrrs}
       />
 
-      <h1>Pull Requests Waiting For Review:</h1>
-      <PendingPrrrs
-        currentUser={session.user}
-        prrrs={prrrs}
-      />
-
-      <h1>Claimed Pull Requests:</h1>
-      <ClaimedPrrrs
-        currentUser={session.user}
-        prrrs={prrrs}
-      />
       <h1>My Requested Prrrs</h1>
       <MyRequestedPrrrs
         currentUser={session.user}
