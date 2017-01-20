@@ -2,19 +2,10 @@ import knex from '../../server/knex'
 
 describe('Queries', function(){
 
-  describe('getPrrrs', function(){
-    it('should resolve with all Prrrs', function(){
-      const queries = new Queries
-      return queries.getPrrrs()
-        .then(prrrs => {
-          expect(prrrs).to.be.an('array')
-        })
-    })
-  })
-
-
   context('as Nico', function(){
-    let commands
+
+    let queries
+
     beforeEach(function(){
       return (new Commands()).createUser({
         name: 'Nico',
@@ -26,13 +17,22 @@ describe('Queries', function(){
         github_refresh_token: null,
       })
       .then(nico => {
-        commands = new Commands(nico)
+        queries = new Queries(nico)
+      })
+    })
+
+    describe('getPrrrs', function(){
+      it('should resolve with all Prrrs', function(){
+        return queries.getPrrrs()
+          .then(prrrs => {
+            expect(prrrs).to.be.an('array')
+          })
       })
     })
 
     describe('getNextPendingPrrr', function(){
       it('should return the oldest unclaimed Prrr not requested by user', function(){
-        const queries = new Queries
+
         const insertPrrr = attributes =>
           knex
             .insert(attributes)
@@ -62,7 +62,7 @@ describe('Queries', function(){
             updated_at: '2017-01-03 17:38:54.803-08',
           }),
         ])
-        .then(_ => commands.queries.getNextPendingPrrr())
+        .then(_ => queries.getNextPendingPrrr())
         .then( prrr => {
           expect(prrr).to.be.an('object')
           expect(prrr.id).to.be.a('number')
@@ -77,11 +77,114 @@ describe('Queries', function(){
         })
       })
       it('should return null if there are no pending Prrrs', function(){
-        const queries = new Queries
-        return commands.queries.getNextPendingPrrr()
+        return queries.getNextPendingPrrr()
         .then(prrr => {
           expect(prrr).to.be.undefined
         })
+
+  describe('metricsForWeek', () =>{
+    beforeEach(() => {
+      const insertPrrr = attributes =>
+      knex
+      .insert(attributes)
+      .into('pull_request_review_requests')
+
+      return Promise.all([
+        insertPrrr({
+          id: 33,
+          owner: 'anasauce',
+          repo: 'prrr-so-meta',
+          number: 45,
+          requested_by: 'anasauce',
+          claimed_by: 'deadlyicon',
+          claimed_at: '2017-01-09 11:52:08.244-08',
+          created_at: '2017-01-09 09:52:08.244-08',
+          updated_at: '2017-01-09 17:38:54.803-08',
+          completed_at: '2017-01-09 12:52:08.244-08',
+        }),
+        insertPrrr({
+          id: 34,
+          owner: 'ykatz',
+          repo: 'prrr-be-awesome',
+          number: 35,
+          requested_by: 'DianaVashti',
+          claimed_by: 'peterparker',
+          claimed_at: '2017-01-09 11:52:08.244-08',
+          created_at: '2017-01-09 09:52:08.244-08',
+          updated_at: '2017-01-09 17:38:54.803-08',
+          completed_at: '2017-01-09 12:52:08.244-08',
+        }),
+      ])
+    })
+    it('Week: should return the correct week', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.week).to.be.a('string')
+        expect(results.week).to.eql('2017-01-09')
+      })
+    })
+    it('Total Code Reviews: should return number of total code reviews', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.totalCodeReviews).to.be.a('number')
+        expect(results.totalCodeReviews).to.eql(2)
+      })
+    })
+    it('Total Code Reviews Per Reviewer: should return an object of key pair values', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.totalCodeReviewsPerReviewer).to.be.a('object')
+        expect(results.totalCodeReviewsPerReviewer).to.eql({deadlyicon: 1, peterparker: 1})
+      })
+    })
+    it('Average Time for Prrr to be Claimed: should return average time', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.averageTimeForPrrrToBeClaimed).to.be.a('number')
+        expect(results.averageTimeForPrrrToBeClaimed).to.eql(7200000)
+      })
+    })
+    it('Average Time for Prrr to be Completed: should return average time', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.averageTimeForPrrrToBeCompleted).to.be.a('number')
+        expect(results.averageTimeForPrrrToBeCompleted).to.eql(3600000)
+      })
+    })
+    it('Total Number of Project Reviews: should return total number', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.totalNumberOfProjectsThatRequestedReviews).to.be.a('number')
+        expect(results.totalNumberOfProjectsThatRequestedReviews).to.eql(2)
+      })
+    })
+    it('Average Number of Reviews Requested Per Project: should return average number', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.averageNumberOfReviewsRequestedPerProject).to.be.a('number')
+        expect(results.averageNumberOfReviewsRequestedPerProject).to.eql(1)
+      })
+    })
+    it('Prrrs: should resolve with all Prrs from a specific week', () => {
+      const queries = new Queries
+      const week = '2017-01-09'
+      return queries.metricsForWeek(week)
+      .then(results => {
+        expect(results.prrrs).to.be.an('array')
       })
     })
   })

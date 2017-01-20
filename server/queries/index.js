@@ -1,3 +1,4 @@
+import moment from 'moment'
 import knex from '../knex'
 import moment from 'moment'
 import Github from '../Github'
@@ -80,6 +81,19 @@ export default class Queries {
       })
       .whereNot('requested_by', this.currentUser.github_username)
       .first()
+  }
+
+  getPrrrsPerWeek(week){
+    const startofWeek = moment(week).startOf('isoweek')
+    const endofWeek = startofWeek.clone().endOf('isoweek')
+    return this.knex
+      .select('*')
+      .from('pull_request_review_requests')
+      .orderBy('created_at', 'asc')
+      .whereBetween('created_at', [
+        startofWeek.format('YYYY-MM-DD'),
+        endofWeek.format('YYYY-MM-DD'),
+      ])
   }
 
   getPrrrById(prrrId){

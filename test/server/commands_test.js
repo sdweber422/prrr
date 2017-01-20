@@ -179,47 +179,82 @@ describe('Commands', function(){
 
       })
     })
-  })
 
-  describe('unclaimStalePrrrs', function(){
-    it('should unclaim all uncompleted Prrrs from more than an hour ago', function() {
-      const commands = new Commands
-      const insertPrrr = attributes =>
-        knex
-          .insert(attributes)
-          .into('pull_request_review_requests')
 
-      return Promise.all([
-        insertPrrr({
-          id: 33,
-          owner: 'anasauce',
-          repo: 'prrr-so-meta',
-          number: 45,
-          requested_by: 'anasauce',
-          claimed_by: 'deadlyicon',
-          claimed_at: moment().subtract(1, 'hour').toDate(),
-          created_at: '2017-01-09 09:52:08.244-08',
-          updated_at: '2017-01-03 17:38:54.803-08',
-        }),
-        insertPrrr({
-          id: 34,
-          owner: 'ykatz',
-          repo: 'prrr-be-awesome',
-          number: 45,
-          requested_by: 'anasauce',
-          claimed_by: 'peterparker',
-          claimed_at: moment().toDate(),
-          created_at: moment().toDate(),
-          updated_at: '2017-01-03 17:38:54.803-08',
-        }),
-      ])
-      .then(_ => commands.unclaimStalePrrrs())
-      .then(_ => commands.queries.getPrrrs())
-      .then(prrrs => {
-        expect(prrrs[1].claimed_at).to.eql(null)
-        expect(prrrs[0].claimed_at).to.not.eql(null)
+    describe('unclaimStalePrrrs', function(){
+      it('should unclaim all uncompleted Prrrs from more than an hour ago', function() {
+        const now = moment()
+        const timeAgo = (number, unit) => now.clone().subtract(number, unit).toDate()
+        const insertPrrr = attributes =>
+          knex
+            .insert(attributes)
+            .into('pull_request_review_requests')
+
+        return Promise.all([
+          insertPrrr({
+            id: 33,
+            owner: 'anasauce',
+            repo: 'prrr-so-meta',
+            number: 45,
+            requested_by: 'anasauce',
+            created_at: timeAgo(4, 'hours'),
+            updated_at: timeAgo(1.2, 'hours'),
+            claimed_by: 'deadlyicon',
+            claimed_at: timeAgo(1.2, 'hours'),
+          }),
+          insertPrrr({
+            id: 34,
+            owner: 'ykatz',
+            repo: 'prrr-be-awesome',
+            number: 45,
+            requested_by: 'anasauce',
+            created_at: timeAgo(3, 'hours'),
+            updated_at: timeAgo(50, 'minutes'),
+            claimed_by: 'peterparker',
+            claimed_at: timeAgo(50, 'minutes'),
+          }),
+          insertPrrr({
+            id: 35,
+            owner: 'deadlyicon',
+            repo: 'prrr-forevah',
+            number: 45,
+            requested_by: 'deadlyicon',
+            created_at: timeAgo(2, 'hours'),
+            updated_at: timeAgo(2, 'hours'),
+            claimed_by: null,
+            claimed_at: null,
+          }),
+        ])
+        .then(_ => commands.queries.getPrrrs())
+        .then(prrrs => {
+          expect(prrrs).to.have.length(3)
+          expect(prrrs[0].id).to.eql(33)
+          expect(prrrs[1].id).to.eql(34)
+          expect(prrrs[2].id).to.eql(35)
+          expect(prrrs[0].claimed_at).to.eql(timeAgo(1.2, 'hours'))
+          expect(prrrs[1].claimed_at).to.eql(timeAgo(50, 'minutes'))
+          expect(prrrs[2].claimed_at).to.eql(null)
+          expect(prrrs[0].claimed_by).to.eql('deadlyicon')
+          expect(prrrs[1].claimed_by).to.eql('peterparker')
+          expect(prrrs[2].claimed_by).to.eql(null)
+        })
+        .then(_ => commands.unclaimStalePrrrs())
+        .then(_ => commands.queries.getPrrrs())
+        .then(prrrs => {
+          expect(prrrs).to.have.length(3)
+          expect(prrrs[0].id).to.eql(33)
+          expect(prrrs[1].id).to.eql(34)
+          expect(prrrs[2].id).to.eql(35)
+          expect(prrrs[0].claimed_at).to.eql(null)
+          expect(prrrs[1].claimed_at).to.eql(timeAgo(50, 'minutes'))
+          expect(prrrs[2].claimed_at).to.eql(null)
+          expect(prrrs[0].claimed_by).to.eql(null)
+          expect(prrrs[1].claimed_by).to.eql('peterparker')
+          expect(prrrs[2].claimed_by).to.eql(null)
+        })
       })
     })
+
   })
 
 })

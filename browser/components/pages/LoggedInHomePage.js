@@ -19,6 +19,7 @@ export default class LoggedInHomePage extends Component {
         currentUser={session.user}
         prrrs={prrrs}
       />
+
       <h1>My Reviewed Prrrs</h1>
         <MyReviewedPrrrs
           currentUser={session.user}

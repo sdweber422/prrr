@@ -6,6 +6,7 @@ import Button from '../../atoms/Button'
 import Layout from '../../molecules/Layout'
 import InspectObject from '../../utils/InspectObject'
 import loadMetricsForWeek from '../../../actions/loadMetricsForWeek'
+import Timeline from '../../molecules/Timeline'
 import './index.sass'
 
 export default class MetricsPage extends Component {
@@ -43,15 +44,15 @@ export default class MetricsPage extends Component {
   render(){
     const week = this.parseWeek()
     const metrics = this.props.metrics && this.props.metrics[formatWeek(week)]
+    const  { prrrsPerWeek ={} } = this.props
     return <Layout className="MetricsPage" session={this.props.session}>
       <WeekBar week={week} />
       <h2 className="MetricsPage-header">Metrics For: {formatWeek(week)}</h2>
       <Metrics metrics={metrics} />
+      <Timeline week={week} prrrs={metrics ? metrics.prrrs : null} />
     </Layout>
   }
 }
-
-
 
 class WeekBar extends Component {
   static propTypes = {
@@ -122,7 +123,7 @@ const Metrics = ({metrics}) => {
 const Duration = ({duration}) =>{
   duration = moment.duration(duration)
   return <span>
-    {duration.hours()} hours and {duration.minutes()} minutes
+    {duration.days()} days and {duration.hours()} hours and {duration.minutes()} minutes
   </span>
 }
 
