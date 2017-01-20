@@ -2,19 +2,10 @@ import knex from '../../server/knex'
 
 describe('Queries', function(){
 
-  describe('getPrrrs', function(){
-    it('should resolve with all Prrrs', function(){
-      const queries = new Queries
-      return queries.getPrrrs()
-        .then(prrrs => {
-          expect(prrrs).to.be.an('array')
-        })
-    })
-  })
-
-
   context('as Nico', function(){
-    let commands
+
+    let queries
+
     beforeEach(function(){
       return (new Commands()).createUser({
         name: 'Nico',
@@ -26,13 +17,22 @@ describe('Queries', function(){
         github_refresh_token: null,
       })
       .then(nico => {
-        commands = new Commands(nico)
+        queries = new Queries(nico)
+      })
+    })
+
+    describe('getPrrrs', function(){
+      it('should resolve with all Prrrs', function(){
+        return queries.getPrrrs()
+          .then(prrrs => {
+            expect(prrrs).to.be.an('array')
+          })
       })
     })
 
     describe('getNextPendingPrrr', function(){
       it('should return the oldest unclaimed Prrr not requested by user', function(){
-        const queries = new Queries
+
         const insertPrrr = attributes =>
           knex
             .insert(attributes)
@@ -62,7 +62,7 @@ describe('Queries', function(){
             updated_at: '2017-01-03 17:38:54.803-08',
           }),
         ])
-        .then(_ => commands.queries.getNextPendingPrrr())
+        .then(_ => queries.getNextPendingPrrr())
         .then( prrr => {
           expect(prrr).to.be.an('object')
           expect(prrr.id).to.be.a('number')
@@ -77,8 +77,7 @@ describe('Queries', function(){
         })
       })
       it('should return null if there are no pending Prrrs', function(){
-        const queries = new Queries
-        return commands.queries.getNextPendingPrrr()
+        return queries.getNextPendingPrrr()
         .then(prrr => {
           expect(prrr).to.be.undefined
         })
