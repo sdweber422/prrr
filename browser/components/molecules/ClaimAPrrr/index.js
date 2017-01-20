@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react'
+import moment from 'moment'
 import Link from '../../atoms/Link'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
 import claimPrrr from '../../../actions/claimPrrr'
 import completePrrr from '../../../actions/completePrrr'
 import unclaimPrrr from '../../../actions/unclaimPrrr'
-import Timer from '../../atoms/Timer'
+import Countdown from '../../atoms/Countdown'
 import './index.sass'
 
 export default class ClaimAPrrr extends Component {
@@ -39,6 +40,7 @@ class UserClaimedAPrrr extends Component {
   render(){
     const { claimedPrrr, currentUser } = this.props
     const href = `https://github.com/${claimedPrrr.owner}/${claimedPrrr.repo}/pull/${claimedPrrr.number}`
+    const deadline = moment(claimedPrrr.claimed_at).add(1, 'hour')
     return <div className="ClaimAPrrr-UserClaimedAPrrr">
       <div>
         <h3>Reviewing: </h3>
@@ -50,7 +52,7 @@ class UserClaimedAPrrr extends Component {
         <GithubUsername username={claimedPrrr.requested_by} currentUser={currentUser} />
       </div>
       <div>
-        <Timer claimedPrrr={claimedPrrr} />
+        <Countdown deadline={deadline} />
       </div>
       <div className="ClaimAPrrr-UserClaimedAPrrr-Buttons">
         <Button
