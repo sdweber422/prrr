@@ -3,25 +3,24 @@
   border-color: black
   border-width: 2px
   border-radius: 5px
-  height: 112px
-  width: 100%
+
   &-UserClaimedAPrrr
     display: flex
     flex-direction: row
     align-items: stretch
     justify-content: space-between
+    padding: 1em
     background-color: DarkTurquoise
     height: inherit
     max-height: 100%
-    &-Reviewing
-      padding-left: 1em
     &-Buttons
       display: flex
       flex-direction: column
       justify-content: center
+
   &-UserNeedsToClaimAPrrr
     background-color: DarkSeaGreen
-    padding: 3px
+    padding: 1em
     height: inherit
     max-height: 100%
     &-Available,
@@ -34,12 +33,8 @@
   .Button
     display: block
     width: 200px
-    margin: 0px 7px 7px 7px
-    border-width: 2px
-    border-color: black
-
-  .Link
-    text-decoration: underline
+    &:first-child
+      margin-bottom: 0.25em
 
   .ReviewButton
     background: DarkTurquoise
