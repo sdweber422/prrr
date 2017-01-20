@@ -30,7 +30,7 @@
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "visibilityjs": "^1.2.4",
-    "webappatron": "deadlyicon/webappatron"
+    "webappatron": "github:deadlyicon/webappatron#e59ede1"
   },
   "devDependencies": {
     "chromedriver": "^2.27.2",
