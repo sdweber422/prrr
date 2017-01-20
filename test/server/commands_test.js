@@ -88,93 +88,61 @@ describe('Commands', function(){
           }));
         })
 
-        context('and Nico is not a collaborator on the repo', function(){
-          let repos
+        context('and a conflicting Prrr already exists', function(){
           beforeEach(function(){
-            repos = sinon.stub(commands.github.repos)
-            repos.checkCollaborator.returns(new Promise((resolve, reject) => {
-              reject(new Error)
-            }));
+            return commands.createRecord('pull_request_review_requests',{
+              owner: 'nicosesma',
+              repo: 'floworky',
+              number: 42,
+              requested_by: 'nicosesma',
+              created_at: new Date,
+              updated_at: new Date,
+              archived_at: new Date,
+            })
           })
-          it('should reject with "You are not a collaborator on..."', function(){
+          it('should unarchive the pre-existing Prrr and resolve with it', function(){
             return commands.createPrrr({
               owner: 'nicosesma',
               repo: 'floworky',
               number: 42,
             })
-            .catch(error => {
-              expect(error.message).to.eql('You are not a collaborator on nicosesma/floworky')
+            .then(prrr => {
+              expect(prrr).to.be.an('object')
+              expect(prrr.id).to.be.a('number')
+              expect(prrr.owner).to.eql('nicosesma')
+              expect(prrr.repo).to.eql('floworky')
+              expect(prrr.number).to.eql(42)
+              expect(prrr.requested_by).to.eql('nicosesma')
+              expect(prrr.claimed_by).to.eql(null)
+              expect(prrr.claimed_at).to.eql(null)
+              expect(prrr.created_at).to.be.a('date')
+              expect(prrr.updated_at).to.be.a('date')
+              expect(prrr.archived_at).to.eql(null)
             })
           })
         })
 
-        context('and Nico is a collaborator on the repo', function(){
-          let repos
-          beforeEach(function(){
-            repos = sinon.stub(commands.github.repos)
-            repos.checkCollaborator.returns(new Promise((resolve, reject) => {
-              resolve()
-            }));
-          })
-
-          context('and a conflicting Prrr already exists', function(){
-            beforeEach(function(){
-              return commands.createRecord('pull_request_review_requests',{
-                owner: 'nicosesma',
-                repo: 'floworky',
-                number: 42,
-                requested_by: 'nicosesma',
-                created_at: new Date,
-                updated_at: new Date,
-                archived_at: new Date,
-              })
+        context('and a conflicting Prrr doesn\'t already exist', function(){
+          it('should create the Prrr', function(){
+            return commands.createPrrr({
+              owner: 'nicosesma',
+              repo: 'floworky',
+              number: 42,
             })
-            it('should unarchive the pre-existing Prrr and resolve with it', function(){
-              return commands.createPrrr({
-                owner: 'nicosesma',
-                repo: 'floworky',
-                number: 42,
-              })
-              .then(prrr => {
-                expect(prrr).to.be.an('object')
-                expect(prrr.id).to.be.a('number')
-                expect(prrr.owner).to.eql('nicosesma')
-                expect(prrr.repo).to.eql('floworky')
-                expect(prrr.number).to.eql(42)
-                expect(prrr.requested_by).to.eql('nicosesma')
-                expect(prrr.claimed_by).to.eql(null)
-                expect(prrr.claimed_at).to.eql(null)
-                expect(prrr.created_at).to.be.a('date')
-                expect(prrr.updated_at).to.be.a('date')
-                expect(prrr.archived_at).to.eql(null)
-              })
+            .then(prrr => {
+              expect(prrr).to.be.an('object')
+              expect(prrr.id).to.be.a('number')
+              expect(prrr.owner).to.eql('nicosesma')
+              expect(prrr.repo).to.eql('floworky')
+              expect(prrr.number).to.eql(42)
+              expect(prrr.requested_by).to.eql('nicosesma')
+              expect(prrr.claimed_by).to.eql(null)
+              expect(prrr.claimed_at).to.eql(null)
+              expect(prrr.created_at).to.be.a('date')
+              expect(prrr.updated_at).to.be.a('date')
+              expect(prrr.archived_at).to.eql(null)
             })
           })
-
-          context('and a conflicting Prrr doesn\'t already exist', function(){
-            it('should create the Prrr', function(){
-              return commands.createPrrr({
-                owner: 'nicosesma',
-                repo: 'floworky',
-                number: 42,
-              })
-              .then(prrr => {
-                expect(prrr).to.be.an('object')
-                expect(prrr.id).to.be.a('number')
-                expect(prrr.owner).to.eql('nicosesma')
-                expect(prrr.repo).to.eql('floworky')
-                expect(prrr.number).to.eql(42)
-                expect(prrr.requested_by).to.eql('nicosesma')
-                expect(prrr.claimed_by).to.eql(null)
-                expect(prrr.claimed_at).to.eql(null)
-                expect(prrr.created_at).to.be.a('date')
-                expect(prrr.updated_at).to.be.a('date')
-                expect(prrr.archived_at).to.eql(null)
-              })
-            })
-          })
-
-
         })
 
       })
