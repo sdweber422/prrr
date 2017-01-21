@@ -1,40 +1,40 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
+import Prrrs from '../../../Prrrs'
 import Link from '../../atoms/Link'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
-import claimPrrr from '../../../actions/claimPrrr'
-import completePrrr from '../../../actions/completePrrr'
-import unclaimPrrr from '../../../actions/unclaimPrrr'
 import Countdown from '../../atoms/Countdown'
+import { claimPrrr, completePrrr, unclaimPrrr } from '../../../actions'
 import './index.sass'
 
 export default class ClaimAPrrr extends Component {
   static propTypes = {
     claimedPrrr: PropTypes.object,
-    prrrs: PropTypes.array.isRequired,
+    prrrs: PropTypes.instanceOf(Prrrs).isRequired,
     currentUser: PropTypes.object.isRequired,
   }
 
   render(){
     const { prrrs, currentUser } = this.props
 
-    const claimedPrrr = prrrs.find(prrr =>
-      !prrr.completed_at &&
-      !prrr.archived_at &&
-      prrr.claimed_by === currentUser.github_username
-    )
+    const claimedPrrr = prrrs.claimed()
 
     const ClaimPrrrBanner = claimedPrrr
-      ? <UserClaimedAPrrr claimedPrrr={claimedPrrr} currentUser={currentUser}/>
-      : <UserNeedsToClaimAPrrr prrrs={prrrs} currentUser={currentUser}/>
+      ? <UserClaimedAPrrr
+        claimedPrrr={claimedPrrr}
+        currentUser={currentUser}
+      />
+      : <UserNeedsToClaimAPrrr
+        currentUser={currentUser}
+        prrrs={prrrs}
+      />
 
     return <div className="ClaimAPrrr">
       {ClaimPrrrBanner}
     </div>
   }
 }
-
 
 class UserClaimedAPrrr extends Component {
   render(){
@@ -73,19 +73,15 @@ class UserClaimedAPrrr extends Component {
 class UserNeedsToClaimAPrrr extends Component {
   render(){
     const { prrrs, currentUser } = this.props
-    const unclaimedPrrrs = prrrs.filter(prrr =>
-      !prrr.completed_at &&
-      !prrr.archived_at &&
-      !prrr.claimed_by
-    )
-    const noPrrrsForYou = unclaimedPrrrs.filter(prrr => prrr.requested_by !== currentUser.github_username)
-    const claimButton = (noPrrrsForYou.length === 0)
+    const pendingPrrrs = prrrs.pending()
+
+    const claimButton = pendingPrrrs.length === 0
       ? <div className="ClaimAPrrr-UserNeedsToClaimAPrrr-Unavailable">
           <h2>There are currently no Pending Pull Request Review Requests from other Learners at this time. Check back later.</h2>
         </div>
       : <div className="ClaimAPrrr-UserNeedsToClaimAPrrr-Available">
           <h1>
-            Pending Prrrs: {unclaimedPrrrs.length}
+            Pending Prrrs: {pendingPrrrs.length}
           </h1>
           <Button className="ReviewButton"
             onClick={claimPrrr}

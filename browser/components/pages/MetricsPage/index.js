@@ -5,7 +5,7 @@ import Link from '../../atoms/Link'
 import Button from '../../atoms/Button'
 import Layout from '../../molecules/Layout'
 import InspectObject from '../../utils/InspectObject'
-import loadMetricsForWeek from '../../../actions/loadMetricsForWeek'
+import { loadMetricsForWeek } from '../../../actions'
 import './index.sass'
 
 export default class MetricsPage extends Component {
@@ -41,9 +41,10 @@ export default class MetricsPage extends Component {
   }
 
   render(){
+    const { session, errors=[], metricsByWeek={} } = this.props
     const week = this.parseWeek()
-    const metrics = this.props.metrics && this.props.metrics[formatWeek(week)]
-    return <Layout className="MetricsPage" session={this.props.session}>
+    const metrics = metricsByWeek[formatWeek(week)]
+    return <Layout className="MetricsPage" session={session} errors={errors}>
       <WeekBar week={week} />
       <h2 className="MetricsPage-header">Metrics For: {formatWeek(week)}</h2>
       <Metrics metrics={metrics} />

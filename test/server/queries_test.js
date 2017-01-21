@@ -25,7 +25,7 @@ describe('Queries', function(){
       it('should resolve with all Prrrs', function(){
         return queries.getPrrrs()
           .then(prrrs => {
-            expect(prrrs).to.be.an('array')
+            expect(prrrs).to.be.an('object')
           })
       })
     })

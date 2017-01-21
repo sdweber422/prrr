@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Prrrs from '../../Prrrs'
 import Layout from '../molecules/Layout'
 import MyRequestedPrrrs from '../molecules/MyRequestedPrrrs'
 import MyReviewedPrrrs from '../molecules/MyReviewedPrrrs'
@@ -7,9 +8,15 @@ import ToggleableSection from '../utils/ToggleableSection'
 
 export default class LoggedInHomePage extends Component {
   render(){
-    const { session, prrrs=[] } = this.props
+    const { session, errors=[] } = this.props
 
-    return <Layout className="HomePage" session={session}>
+    const prrrs = new Prrrs({
+      currentUser: session.user,
+      prrrs: this.props.prrrs,
+    })
+
+    return <Layout className="HomePage" session={session} errors={errors}>
+      <h1>Pull Requests Waiting For Review:</h1>
       <ClaimAPrrr
         currentUser={session.user}
         prrrs={prrrs}

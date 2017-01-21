@@ -2,13 +2,13 @@ import React, { Component, PropTypes } from 'react'
 import Button from '../atoms/Button'
 import Layout from '../molecules/Layout'
 import InspectObject from '../utils/InspectObject'
-import createPrrr from '../../actions/createPrrr'
+import { createPrrr } from '../../actions'
 import './RequestReviewPage.sass'
 
 export default class RequestReviewPage extends Component {
   render(){
-    const { session } = this.props
-    return <Layout className="RequestReviewPage" session={session}>
+    const { session, errors=[] } = this.props
+    return <Layout className="RequestReviewPage" session={session} errors={errors}>
       <div className="RequestReviewPage-RequestBox">
         <CreatePrrrForm />
       </div>

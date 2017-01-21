@@ -1,3 +1,4 @@
+import Prrrs from './Prrrs'
 import cat from './images/favicon.ico'
 import catHead from './images/favicon_head.ico'
 import state from './state'
@@ -40,8 +41,10 @@ const updateNumFavicon = (numPendingPrrrs) => {
 }
 
 state.subscribe(state => {
-  const numPendingPrrrs = (state.prrrs || [])
-    .filter(prrr => !prrr.claimed_at && !prrr.archived_at)
-    .length
-  updateNumFavicon(numPendingPrrrs)
+  const prrrs = new Prrrs({
+    currentUser: state.session.user,
+    prrrs: state.prrrs,
+  })
+
+  updateNumFavicon(prrrs.pending().length)
 })

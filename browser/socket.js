@@ -1,53 +1,61 @@
+import logger from './logger'
 import state from './state'
 const io = require('socket.io-client')
 const socket = io.connect(location.origin)
 
-const getPrrrIndex = (prrr) => {
-  const prrrs = state.get().prrrs
-  const prrrToUpdate = prrrs.find(oldPrrr => {
-    return prrr.id === oldPrrr.id
+const on = (eventType, handler) => {
+  socket.on(eventType, payload => {
+    logger.debug('🕳 <-', eventType, payload)
+    return handler(payload)
   })
-  const prrrIndex = prrrs.indexOf(prrrToUpdate)
-
-  return prrrIndex
 }
 
-socket.on('errorReport', function(payload){
-  console.log('SOCKET ERROR REPORT', payload)
+export const emit = (eventType, payload) => {
+  logger.debug('🕳 ->', eventType, payload)
+  socket.emit(eventType, payload)
+}
+
+const ERROR_MESSAGE_LIFETIME = 5000
+on('errorOccured', ({error}) => {
+  const e = new Error(error.message)
+  e.stack = error.stack
+  logger.error(e)
+  const errors = state.get().errors || []
+  errors.push(error)
+  state.set({errors})
+  setTimeout(_ => {
+    const errors = (state.get().errors || [])
+      .filter(e => e !== error)
+    state.set({errors})
+  }, ERROR_MESSAGE_LIFETIME)
 })
 
-socket.on('updateSession', function(session){
+on('updateSession', (session) => {
   state.set({session})
 })
 
-socket.on('initialPrrrs', function(prrrs){
+on('initialPrrrs', (prrrs) => {
   state.set({prrrs})
 })
 
-socket.on('broadcastToAll', function(prrr){
+on('metricsForWeek', ({week, metricsForWeek}) => {
+  const metricsByWeek = state.get().metricsByWeek || {}
+  metricsByWeek[week] = metricsForWeek
+  state.set({metricsByWeek})
+})
+
+on('PrrrUpdated', (prrr) => {
   const prrrs = state.get().prrrs
-  const index = getPrrrIndex(prrr)
-  prrrs.splice(index, 1, prrr)
+  prrrs[prrr.id] = prrr
   state.set({prrrs})
 })
 
-socket.on('newPrrr', function(prrr){
-  const prrrs = state.get().prrrs
-  prrrs.push(prrr)
-  state.set({prrrs})
-})
-
-socket.on('removePrrr', function(prrr){
-  const prrrs = state.get().prrrs
-  const index = getPrrrIndex(prrr)
-  prrrs.splice(index, 1)
-  state.set({prrrs})
-})
-
-socket.on('prrrClaimedByYou', function(prrr){
+on('PrrrClaimed', (prrr) => {
   const url = `https://github.com/${prrr.owner}/${prrr.repo}/pull/${prrr.number}`
   const popup = window.open(url, '_blank')
-   if (popup) popup.focus()
+  if (popup) popup.focus()
 })
 
-module.exports = socket
+window.DEBUG = window.DEBUG || {}
+window.DEBUG.socket = socket
+window.DEBUG.emit = emit

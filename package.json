@@ -14,11 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "cookie-session": "^2.0.0-alpha.2",
     "dotenv": "^2.0.0",
-    "express-session": "^1.14.2",
     "font-awesome": "^4.7.0",
     "github": "^7.1.0",
     "knex": "^0.12.6",
+    "loglevel": "^1.4.1",
     "moment": "^2.17.1",
     "morgan": "^1.7.0",
     "normalize.css": "^5.0.0",
@@ -31,7 +32,8 @@
     "sinon-chai": "^2.8.0",
     "socket.io": "^1.7.2",
     "visibilityjs": "^1.2.4",
-    "webappatron": "github:deadlyicon/webappatron#e59ede1"
+    "webappatron": "github:deadlyicon/webappatron#e59ede1",
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "chromedriver": "^2.27.2",

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
+import Prrrs from '../../../Prrrs'
 import Link from '../../atoms/Link'
 import Icon from '../../atoms/Icon'
 import Date from '../../atoms/Date'
@@ -7,11 +8,12 @@ import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
 import PrrrsTable from '../PrrrsTable'
 import ErrorMessage from '../../atoms/ErrorMessage'
+import { archivePrrr } from '../../../actions'
 
 export default class MyRequestedPrrrs extends Component {
   static propTypes = {
     currentUser: PropTypes.object.isRequired,
-    prrrs: PropTypes.array.isRequired,
+    prrrs: PropTypes.instanceOf(Prrrs).isRequired,
   }
 
   renderAdditionalHeaders(){
@@ -48,7 +50,7 @@ export default class MyRequestedPrrrs extends Component {
       this.renderClaimedCell(prrr, currentUser),
       this.renderCompletedCell(prrr, currentUser),
       <td key="archive">
-        <Button onClick={_ => confirmArchivePrrr(href, prrr)} disabled={!!prrr.claimed_at}>
+        <Button onClick={_ => confirmArchivePrrr(prrr)} disabled={!!prrr.claimed_at}>
           <Icon type="times" />
         </Button>
       </td>,
@@ -57,9 +59,7 @@ export default class MyRequestedPrrrs extends Component {
 
   render(){
     const {currentUser} = this.props
-    const prrrs = this.props.prrrs
-      .filter(prrr => prrr.requested_by === currentUser.github_username)
-      .filter(prrr => prrr.archived_at === null)
+    const prrrs = this.props.prrrs.requestedByMe()
       .sort((a, b) =>
         moment(b.created_at).valueOf() -
         moment(a.created_at).valueOf()
@@ -78,7 +78,8 @@ export default class MyRequestedPrrrs extends Component {
 }
 
 
-function confirmArchivePrrr(href, prrr){
-  const message = `Are you sure you want to archive your\n\nPull Request Review Request for\n\n${href}`
+function confirmArchivePrrr(prrr){
+  const url = `https://github.com/${prrr.owner}/${prrr.repo}/pull/${prrr.number}`
+  const message = `Are you sure you want to archive your\n\nPull Request Review Request for\n\n${url}`
   if (confirm(message)) archivePrrr(prrr.id)
 }

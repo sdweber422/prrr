@@ -153,6 +153,13 @@ describe('Commands', function(){
       it('should unclaim all uncompleted Prrrs from more than an hour ago', function() {
         const now = moment()
         const timeAgo = (number, unit) => now.clone().subtract(number, unit).toDate()
+
+        const getAllPrrrs = () =>
+          knex
+            .select('*')
+            .from('pull_request_review_requests')
+            .orderBy('created_at', 'asc')
+
         const insertPrrr = attributes =>
           knex
             .insert(attributes)
@@ -193,7 +200,7 @@ describe('Commands', function(){
             claimed_at: null,
           }),
         ])
-        .then(_ => commands.queries.getPrrrs())
+        .then(_ => getAllPrrrs())
         .then(prrrs => {
           expect(prrrs).to.have.length(3)
           expect(prrrs[0].id).to.eql(33)
@@ -207,7 +214,7 @@ describe('Commands', function(){
           expect(prrrs[2].claimed_by).to.eql(null)
         })
         .then(_ => commands.unclaimStalePrrrs())
-        .then(_ => commands.queries.getPrrrs())
+        .then(_ => getAllPrrrs())
         .then(prrrs => {
           expect(prrrs).to.have.length(3)
           expect(prrrs[0].id).to.eql(33)

@@ -4,7 +4,6 @@ import Link from '../../atoms/Link'
 import Avatar from '../../atoms/Avatar'
 import './index.sass'
 import favicon from '../../../images/favicon.ico'
-import logout from '../../../actions/logout'
 
 export default class Navbar extends Component {
 
@@ -29,7 +28,7 @@ export default class Navbar extends Component {
       <div>
         <span>{user.name}</span>
         <Avatar user={user} />
-        <Button className="Navbar-button-logout" onClick={logout}>Logout</Button>
+        <Button href="/logout" externalLink className="Navbar-button-logout">Logout</Button>
       </div>
     </div>
   }

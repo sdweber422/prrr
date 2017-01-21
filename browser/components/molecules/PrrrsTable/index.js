@@ -4,7 +4,7 @@ import Icon from '../../atoms/Icon'
 import Date from '../../atoms/Date'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
-import archivePrrr from '../../../actions/archivePrrr'
+import { archivePrrr } from '../../../actions'
 import './index.sass'
 
 export default class PrrrsTable extends Component {

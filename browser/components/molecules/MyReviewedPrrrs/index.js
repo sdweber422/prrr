@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
+import Prrrs from '../../../Prrrs'
 import Date from '../../atoms/Date'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
@@ -9,7 +10,7 @@ import ErrorMessage from '../../atoms/ErrorMessage'
 export default class MyReviewedPrrrs extends Component {
   static propTypes = {
     currentUser: PropTypes.object.isRequired,
-    prrrs: PropTypes.array.isRequired,
+    prrrs: PropTypes.instanceOf(Prrrs).isRequired,
   }
 
   renderAdditionalHeaders(){
@@ -33,9 +34,7 @@ export default class MyReviewedPrrrs extends Component {
   }
   render(){
     const { currentUser } = this.props
-    const prrrs = this.props.prrrs
-      .filter(prrr => prrr.claimed_by === currentUser.github_username)
-      .filter(prrr => prrr.completed_at !== null)
+    const prrrs = this.props.prrrs.reviewdByMe()
       .sort((a, b) =>
         moment(b.created_at).valueOf() -
         moment(a.created_at).valueOf()
