@@ -3,6 +3,7 @@ import Layout from '../molecules/Layout'
 import MyRequestedPrrrs from '../molecules/MyRequestedPrrrs'
 import MyReviewedPrrrs from '../molecules/MyReviewedPrrrs'
 import ClaimAPrrr from '../molecules/ClaimAPrrr'
+import ToggleableSection from '../utils/ToggleableSection'
 
 export default class LoggedInHomePage extends Component {
   render(){
@@ -13,17 +14,20 @@ export default class LoggedInHomePage extends Component {
         currentUser={session.user}
         prrrs={prrrs}
       />
+      
+      <ToggleableSection title="My Requested Prrrs">
+        <MyRequestedPrrrs
+          currentUser={session.user}
+          prrrs={prrrs}
+        />
+      </ToggleableSection>
 
-      <h1>My Requested Prrrs</h1>
-      <MyRequestedPrrrs
-        currentUser={session.user}
-        prrrs={prrrs}
-      />
-      <h1>My Reviewed Prrrs</h1>
+      <ToggleableSection title="My Reviewed Prrrs">
         <MyReviewedPrrrs
           currentUser={session.user}
           prrrs={prrrs}
-      />
+        />
+      </ToggleableSection>
     </Layout>
   }
 }
