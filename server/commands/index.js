@@ -113,7 +113,7 @@ export default class Commands {
     return this.queries.getNextPendingPrrr()
       .then(prrr =>
         prrr
-          ? this.markPullRequestAsClaimed(prrr.id).then(_ => prrr)
+          ? this.markPullRequestAsClaimed(prrr.id)
           : null
       )
   }
