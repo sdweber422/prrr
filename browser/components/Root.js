@@ -17,7 +17,11 @@ export default class Root extends Component {
   }
 
   update(newState){
-    this.setState(newState)
+    if (this.animationFrame)
+      cancelAnimationFrame(this.animationFrame)
+    this.animationFrame = requestAnimationFrame(_ => {
+      this.setState(newState)
+    })
   }
 
   render(){
