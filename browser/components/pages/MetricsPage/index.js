@@ -125,7 +125,7 @@ const Metrics = ({metrics}) => {
 const Duration = ({duration}) =>{
   duration = moment.duration(duration)
   return <span>
-    {duration.hours()} hours and {duration.minutes()} minutes
+    {duration.days()} days and {duration.hours()} hours and {duration.minutes()} minutes
   </span>
 }
 
