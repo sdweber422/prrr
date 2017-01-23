@@ -4,6 +4,7 @@ import moment from 'moment'
 export default class Date extends Component {
   static propTypes = {
     date: PropTypes.oneOfType([
+      PropTypes.instanceOf(moment),
       PropTypes.string,
       PropTypes.date,
     ]).isRequired,
