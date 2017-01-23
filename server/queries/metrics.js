@@ -32,6 +32,7 @@ export default class Metrics {
       this.averageTimeForPrrrToBeCompleted(),
       this.totalNumberOfProjectsThatRequestedReviews(),
       this.averageNumberOfReviewsRequestedPerProject(),
+      this.prrrs(),
     ])
     .then(results => {
       return {
@@ -42,6 +43,7 @@ export default class Metrics {
         averageTimeForPrrrToBeCompleted: results[3],
         totalNumberOfProjectsThatRequestedReviews: results[4],
         averageNumberOfReviewsRequestedPerProject: results[5],
+        prrrs: results[6],
       }
     })
   }
@@ -104,7 +106,16 @@ export default class Metrics {
 
     return this.knex
       .raw(`select avg(count) from (${subSelect}) as avg`)
-      .then(result => Number(result.rows[0].avg))
+      .then(result => Math.round(Number(result.rows[0].avg)*100)/100)
+  }
+
+
+  prrrs(){
+    return this.knex
+      .select('*')
+      .from('pull_request_review_requests')
+      .orderBy('created_at', 'asc')
+      .whereBetween('created_at', this.weekRange())
   }
 
 }

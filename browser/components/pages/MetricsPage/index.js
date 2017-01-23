@@ -6,6 +6,7 @@ import Button from '../../atoms/Button'
 import Layout from '../../molecules/Layout'
 import InspectObject from '../../utils/InspectObject'
 import { loadMetricsForWeek } from '../../../actions'
+import Timeline from '../../molecules/Timeline'
 import './index.sass'
 
 export default class MetricsPage extends Component {
@@ -48,6 +49,7 @@ export default class MetricsPage extends Component {
       <WeekBar week={week} />
       <h2 className="MetricsPage-header">Metrics For: {formatWeek(week)}</h2>
       <Metrics metrics={metrics} />
+      <Timeline week={week} prrrs={metrics && metrics.prrrs} />
     </Layout>
   }
 }
