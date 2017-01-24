@@ -1,3 +1,4 @@
+import moment from 'moment'
 import knex from '../../server/knex'
 
 describe('Queries', function(){
@@ -106,10 +107,10 @@ describe('Queries', function(){
           number: 45,
           requested_by: 'anasauce',
           claimed_by: 'deadlyicon',
-          claimed_at: '2017-01-09 11:52:08.244-08',
-          created_at: '2017-01-09 09:52:08.244-08',
-          updated_at: '2017-01-09 17:38:54.803-08',
-          completed_at: '2017-01-09 12:52:08.244-08',
+          claimed_at:   moment('2017-01-09 11:52:08.244-08').toDate(),
+          created_at:   moment('2017-01-09 09:52:08.244-08').toDate(),
+          updated_at:   moment('2017-01-09 17:38:54.803-08').toDate(),
+          completed_at: moment('2017-01-09 12:52:08.244-08').toDate(),
         }),
         insertPrrr({
           id: 34,
@@ -118,10 +119,10 @@ describe('Queries', function(){
           number: 35,
           requested_by: 'DianaVashti',
           claimed_by: 'peterparker',
-          claimed_at: '2017-01-09 11:52:08.244-08',
-          created_at: '2017-01-09 09:52:08.244-08',
-          updated_at: '2017-01-09 17:38:54.803-08',
-          completed_at: '2017-01-09 12:52:08.244-08',
+          claimed_at:   moment('2017-01-09 11:52:08.244-08').toDate(),
+          created_at:   moment('2017-01-09 09:52:08.244-08').toDate(),
+          updated_at:   moment('2017-01-09 17:38:54.803-08').toDate(),
+          completed_at: moment('2017-01-09 12:52:08.244-08').toDate(),
         }),
       ])
     })
