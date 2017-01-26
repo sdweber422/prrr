@@ -33,53 +33,68 @@ describe('Queries', function(){
 
     describe('getNextPendingPrrr', function(){
       it('should return the oldest unclaimed Prrr not requested by user', function(){
+        const now = moment()
+        const minutesAgo = minutes =>
+          now.clone().subtract(minutes, 'minutes').toDate()
 
         const insertPrrr = attributes =>
           knex
             .insert(attributes)
             .into('pull_request_review_requests')
 
+        const markPullRequestAsClaimed = prrr =>
+          knex
+            .table('pull_request_review_requests')
+            .update({
+              claimed_by: 'anybody',
+              claimed_at: new Date,
+              updated_at: new Date,
+            })
+            .where('id', prrr.id)
+
         return Promise.all([
           insertPrrr({
-            id: 33,
-            owner: 'anasauce',
-            repo: 'prrr-so-meta',
-            number: 45,
-            requested_by: 'anasauce',
-            claimed_by:  null,
-            claimed_at:  null,
-            created_at: '2017-01-09 09:52:08.244-08',
-            updated_at: '2017-01-03 17:38:54.803-08',
+            owner: 'linus',
+            repo: 'killall-prrr',
+            number: 12,
+            requested_by: 'linus',
+            created_at: minutesAgo(30),
+            updated_at: minutesAgo(30),
           }),
           insertPrrr({
-            id: 34,
             owner: 'ykatz',
             repo: 'prrr-be-awesome',
-            number: 45,
-            requested_by: 'nicosesma',
-            claimed_by: null,
-            claimed_at: null,
-            created_at: '2017-01-09 08:52:08.244-08',
-            updated_at: '2017-01-03 17:38:54.803-08',
+            number: 18,
+            requested_by: 'ykatz',
+            created_at: minutesAgo(25),
+            updated_at: minutesAgo(25),
+          }),
+          insertPrrr({
+            owner: 'paulirish',
+            repo: 'prrr-rocks',
+            number: 18,
+            requested_by: 'paulirish',
+            created_at: minutesAgo(20),
+            updated_at: minutesAgo(20),
           }),
         ])
         .then(_ => queries.getNextPendingPrrr())
         .then( prrr => {
-          expect(prrr).to.be.an('object')
-          expect(prrr.id).to.be.a('number')
-          expect(prrr.owner).to.eql('anasauce')
-          expect(prrr.repo).to.eql('prrr-so-meta')
-          expect(prrr.number).to.eql(45)
-          expect(prrr.requested_by).to.eql('anasauce')
-          expect(prrr.claimed_at).to.eql(null)
-          expect(prrr.created_at).to.be.a('date')
-          expect(prrr.updated_at).to.be.a('date')
-          expect(prrr.archived_at).to.eql(null)
+          expect(prrr.repo).to.eql('killall-prrr')
+          return markPullRequestAsClaimed(prrr)
         })
-      })
-      it('should return null if there are no pending Prrrs', function(){
-        return queries.getNextPendingPrrr()
-        .then(prrr => {
+        .then(_ => queries.getNextPendingPrrr())
+        .then( prrr => {
+          expect(prrr.repo).to.eql('prrr-be-awesome')
+          return markPullRequestAsClaimed(prrr)
+        })
+        .then(_ => queries.getNextPendingPrrr())
+        .then( prrr => {
+          expect(prrr.repo).to.eql('prrr-rocks')
+          return markPullRequestAsClaimed(prrr)
+        })
+        .then(_ => queries.getNextPendingPrrr())
+        .then( prrr => {
           expect(prrr).to.be.undefined
         })
       })
