@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import Button from '../atoms/Button'
-import Layout from '../molecules/Layout'
-import InspectObject from '../utils/InspectObject'
-import { createPrrr } from '../../actions'
-import './RequestReviewPage.sass'
+import Button from '../../atoms/Button'
+import Layout from '../../molecules/Layout'
+import InspectObject from '../../utils/InspectObject'
+import { createPrrr } from '../../../actions'
+import './index.sass'
 
 export default class RequestReviewPage extends Component {
   render(){
