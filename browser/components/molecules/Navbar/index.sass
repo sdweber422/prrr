@@ -11,45 +11,39 @@
   padding: 5px 10px
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
-  &-button-add-prrr
-    width: auto
-    height: auto
-    padding: 10px
-    &:hover
-      background: #5CB85C
-      border: 1px #5CB85C solid
-      color: #FFF
-  &-button-logout
-    width: auto
-    height: auto
-    &:hover
-      background: #C9302C
-      border: 1px #C9302C solid
-      color: white
-
-  &-title
+  &-inline-links
+    > .Link
+      position: relative
+      margin-right: 1em
+      &:not(:last-child):after
+        position: absolute
+        top: 0
+        right: -0.65em
+        content: " | "
+        &:hover
+          text-decoration: none
+  &-logo
     font-family: "Lobster", cursive
     font-size: 40px
+    &, &:focus, &:hover
+      text-decoration: none
+    > img
+      height: 30px
+      width: 30px
+      margin-right: 0.25em
+      -webkit-filter: invert(1)
+      filter: invert(1)
 
   > div
     display: flex
     flex-direction: row
     align-items: center
+    justify-content: space-between
     > *
-      margin: 0 2px
-    > span
-      margin-right: 15px
-      font-size: 20px
+      margin-right: 0.25em
+
   .Avatar
     margin-right: 15px
     height: 40px
     width: 40px
     border-radius: 50%
-
-  &-favicon
-    -webkit-filter: invert(1)
-    filter: invert(1)
-    position: relative
-    top: 2px
-    height: 16px
-    width: 16px

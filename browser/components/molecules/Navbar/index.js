@@ -14,21 +14,21 @@ export default class Navbar extends Component {
   render(){
     const { user } = this.props.session
     return <div className="Navbar">
-      <div>
-        <Button type={false} href="/">
-          <img src={favicon} className="Navbar-favicon" />
-        </Button>
-        &nbsp;
-        <Button className="Navbar-button-add-prrr" href="/request"> Add a Prrr </Button>
+      <div className="Navbar-inline-links">
+        <Link href="/">Home</Link>
+        <Link href="/request">Add a Prrr</Link>
         <Link href="/metrics">Metrics</Link>
       </div>
       <div>
-        <p className="Navbar-title"> Prrr </p>
+        <Link className="Navbar-logo" href="/">
+          <img src={favicon} />
+          <span>Prrr</span>
+        </Link>
       </div>
       <div>
         <span>{user.name}</span>
         <Avatar user={user} />
-        <Button href="/logout" externalLink className="Navbar-button-logout">Logout</Button>
+        <Link href="/logout"externalLink>Logout</Link>
       </div>
     </div>
   }
