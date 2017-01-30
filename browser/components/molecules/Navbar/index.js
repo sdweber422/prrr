@@ -29,7 +29,7 @@ export default class Navbar extends Component {
       <div>
         <span>{user.name}</span>
         <Avatar user={user} />
-        <Link href="/logout"externalLink>Logout</Link>
+        <Link href="/logout" externalLink className="Navbar-button-logout">Logout</Link>
       </div>
     </div>
   }
