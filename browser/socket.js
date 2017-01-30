@@ -34,7 +34,11 @@ on('updateSession', (session) => {
   state.set({session})
 })
 
-on('initialPrrrs', (prrrs) => {
+on('initialPrrrs', (newPrrrs) => {
+  const prrrs = state.get().prrrs || {}
+  Object.keys(newPrrrs).forEach(prrrId => {
+    prrrs[prrrId] = newPrrrs[prrrId]
+  })
   state.set({prrrs})
 })
 

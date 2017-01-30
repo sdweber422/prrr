@@ -4,6 +4,10 @@ export const loadMetricsForWeek = (week) => {
   emit('loadMetricsForWeek', {week})
 }
 
+export const loadAllPrrrs = (week) => {
+  emit('loadAllPrrrs', {week})
+}
+
 export const createPrrr = ({owner, repo, number}) => {
   emit('createPrrr', {owner, repo, number})
 }

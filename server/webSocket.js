@@ -98,6 +98,17 @@ const initializeConnection = (socket) => {
       })
   })
 
+  on('loadAllPrrrs', ({week}) => {
+    if (!user) return
+    queries.getAllPrrrs()
+      .then(prrrs => {
+        emit('initialPrrrs', prrrs)
+      })
+      .catch(error => {
+        reportError(`loading all prrrs`, error)
+      })
+  })
+
 
   on('createPrrr', (payload) => {
     if (!user) return

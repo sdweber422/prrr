@@ -18,6 +18,7 @@ export default class Navbar extends Component {
         <Link href="/">Home</Link>
         <Link href="/request">Add a Prrr</Link>
         <Link href="/metrics">Metrics</Link>
+        <Link href="/all">All Prrrs</Link>
       </div>
       <div>
         <Link className="Navbar-logo" href="/">

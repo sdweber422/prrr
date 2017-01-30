@@ -28,6 +28,13 @@ export default class Queries {
       .first()
   }
 
+  getAllPrrrs(){
+    return this.knex
+      .select('*')
+      .from('pull_request_review_requests')
+      .then(convertArrayOfPrrrsIntoHashById)
+  }
+
   getPrrrs(){
     return this.knex
       .select('*')
@@ -45,12 +52,7 @@ export default class Queries {
       .orWhere({
         claimed_by: this.currentUser.github_username,
       })
-      .then(prrrs =>
-        prrrs.reduce((prrrs, prrr) => {
-          prrrs[prrr.id] = prrr
-          return prrrs
-        }, {})
-      )
+      .then(convertArrayOfPrrrsIntoHashById)
   }
 
   getNextPendingPrrr(){
@@ -104,3 +106,9 @@ export default class Queries {
     return new Metrics({week, queries: this}).load()
   }
 }
+
+const convertArrayOfPrrrsIntoHashById = prrrs =>
+  prrrs.reduce((prrrs, prrr) => {
+    prrrs[prrr.id] = prrr
+    return prrrs
+  }, {})
