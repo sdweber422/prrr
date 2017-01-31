@@ -46,18 +46,21 @@ const initializeConnection = (socket) => {
 
   const on = (eventType, handler) => {
     socket.on(eventType, payload => {
-      logger.info('SERVER SOCKET RCV', JSON.stringify({eventType, payload}))
+      logger.info(`SERVER SOCKET RCV "${eventType}"`)
+      logger.silly(JSON.stringify({eventType, payload}))
       return handler(payload)
     })
   }
 
   const emit = (eventType, payload) => {
-    logger.info('SERVER SOCKET EMIT', JSON.stringify({eventType, payload}))
+    logger.info(`SERVER SOCKET EMIT "${eventType}"`)
+    logger.silly(JSON.stringify({eventType, payload}))
     socket.emit(eventType, payload)
   }
 
   const broadcast = (eventType, payload) => {
-    logger.info('SERVER SOCKET BROADCAST', JSON.stringify({eventType, payload}))
+    logger.info(`SERVER SOCKET BROADCAST "${eventType}"`)
+    logger.silly(JSON.stringify({eventType, payload}))
     socket.broadcast.emit(eventType, payload)
   }
 
