@@ -39,7 +39,6 @@ export default class Queries {
     return this.knex
       .select('*')
       .from('pull_request_review_requests')
-      .orderBy('created_at', 'desc')
       .where({
         archived_at: null,
         claimed_at: null,
@@ -52,14 +51,34 @@ export default class Queries {
       .orWhere({
         claimed_by: this.currentUser.github_username,
       })
+      .orderBy('created_at', 'desc')
       .then(convertArrayOfPrrrsIntoHashById)
+      .then(prrrs => {
+        return this.knex
+          .select('*')
+          .from('skipped_prrrs')
+          .whereIn('prrr_id', Object.keys(prrrs))
+          .where('github_username', this.currentUser.github_username)
+          .then(skippedPrrrs => {
+            skippedPrrrs.forEach(skip => {
+              prrrs[skip.prrr_id].skipped = true
+            })
+            return prrrs
+          })
+      })
+
   }
 
   getNextPendingPrrr(){
+    var skipped_prrrs = this.knex
+      .select('prrr_id')
+      .from('skipped_prrrs')
+      .where('github_username', this.currentUser.github_username)
+
     return this.knex
-      .select('*')
+      .select(knex.raw('DISTINCT("pull_request_review_requests".*)'))
       .from('pull_request_review_requests')
-      .orderBy('created_at', 'asc')
+      .leftJoin('skipped_prrrs', 'pull_request_review_requests.id', 'skipped_prrrs.prrr_id')
       .where({
         archived_at: null,
         completed_at: null,
@@ -67,6 +86,8 @@ export default class Queries {
         claimed_at: null,
       })
       .whereNot('requested_by', this.currentUser.github_username)
+      .whereNotIn('id', skipped_prrrs)
+      .orderBy('created_at', 'asc')
       .first()
   }
 

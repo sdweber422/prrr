@@ -141,11 +141,29 @@ const initializeConnection = (socket) => {
     if (!user) return
     commands.claimPrrr()
       .then(prrr => {
-        emit('PrrrClaimed', prrr)
-        broadcastToAll('PrrrUpdated', prrr)
+        if (prrr){
+          emit('PrrrClaimed', prrr)
+          broadcastToAll('PrrrUpdated', prrr)
+        }
       })
       .catch(error => {
         reportError(`claiming Prrr ${prrrId}`, error)
+      })
+  })
+
+
+  on('skipPrrr', ({prrrId}) => {
+    if (!user) return
+    commands.skipPrrr(prrrId)
+      .then(({newClaimedPrrr, skippedPrrr}) => {
+        if (skippedPrrr) broadcastToAll('PrrrUpdated', skippedPrrr)
+        if (newClaimedPrrr){
+          broadcastToAll('PrrrUpdated', newClaimedPrrr)
+          emit('PrrrClaimed', newClaimedPrrr)
+        }
+      })
+      .catch(error => {
+        reportError(`unclaiming Prrr ${prrrId}`, error)
       })
   })
 

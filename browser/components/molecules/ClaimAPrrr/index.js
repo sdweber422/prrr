@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
 import Prrrs from '../../../Prrrs'
+import Date from '../../atoms/Date'
 import Link from '../../atoms/Link'
 import Button from '../../atoms/Button'
 import GithubUsername from '../../atoms/GithubUsername'
 import Countdown from '../../atoms/Countdown'
-import { claimPrrr, completePrrr, unclaimPrrr } from '../../../actions'
+import { skipPrrr, claimPrrr, completePrrr, unclaimPrrr } from '../../../actions'
 import './index.sass'
 
 export default class ClaimAPrrr extends Component {
@@ -43,26 +44,26 @@ class UserClaimedAPrrr extends Component {
     const deadline = moment(claimedPrrr.claimed_at).add(1, 'hour')
     return <div className="ClaimAPrrr-UserClaimedAPrrr">
       <div>
-        <h3>Reviewing: </h3>
+        <h4>Reviewing: </h4>
         <Link href={href} target="_blank">
           {claimedPrrr.owner}/{claimedPrrr.repo}/pull/{claimedPrrr.number}
         </Link>
-        <br/>
-        <span> for </span>
+        <h4>For: </h4>
         <GithubUsername username={claimedPrrr.requested_by} currentUser={currentUser} />
+        <h4>Requested: </h4>
+        <Date fromNow date={claimedPrrr.created_at} />
       </div>
-      <div>
+      <div className="ClaimAPrrr-UserClaimedAPrrr-deadline">
         <Countdown deadline={deadline} />
       </div>
-      <div className="ClaimAPrrr-UserClaimedAPrrr-Buttons">
-        <Button
-          onClick={_ => unclaimPrrr(claimedPrrr.id)}
-        >
-          Unclaim
+      <div className="ClaimAPrrr-UserClaimedAPrrr-buttons">
+        <Button onClick={_ => skipPrrr(claimedPrrr.id)}>
+          Skip
         </Button>
-        <Button
-          onClick={_=> completePrrr(claimedPrrr.id)}
-        >
+        <Button onClick={_ => unclaimPrrr(claimedPrrr.id)}>
+          Abandon
+        </Button>
+        <Button onClick={_=> completePrrr(claimedPrrr.id)}>
           Complete
         </Button>
       </div>

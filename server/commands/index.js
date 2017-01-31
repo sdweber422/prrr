@@ -127,10 +127,30 @@ export default class Commands {
         updated_at: new Date,
       })
       .where('id', prrrId)
-      .whereNotNull('claimed_by')
-      .whereNotNull('claimed_at')
+      .where('claimed_by', this.currentUser.github_username)
       .returning('*')
       .then(firstRecord)
+  }
+
+  skipPrrr(prrrId){
+    logger.debug('skipPrrr', {prrrId})
+    return this.knex
+      .table('skipped_prrrs')
+      .insert({
+        prrr_id: prrrId,
+        github_username: this.currentUser.github_username,
+        skipped_at: new Date,
+      })
+      .catch(error => {
+        if (error.message.includes('duplicate key value violates unique constraint')) return
+        throw error
+      })
+      .then(_ => this.unclaimPrrr(prrrId))
+      .then(skippedPrrr => {
+        skippedPrrr.skipped = true
+        return this.claimPrrr()
+          .then(newClaimedPrrr => ({newClaimedPrrr, skippedPrrr}))
+      })
   }
 
   unclaimStalePrrrs(prrr){

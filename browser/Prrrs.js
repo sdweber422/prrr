@@ -17,7 +17,8 @@ export default class Prrrs {
       prrr.requested_by !== this.currentUser.github_username &&
       !prrr.completed_at &&
       !prrr.archived_at &&
-      !prrr.claimed_by
+      !prrr.claimed_by &&
+      !prrr.skipped
     )
   }
 

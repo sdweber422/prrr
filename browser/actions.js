@@ -20,6 +20,10 @@ export const claimPrrr = () => {
   emit('claimPrrr')
 }
 
+export const skipPrrr = (prrrId) => {
+  emit('skipPrrr', {prrrId})
+}
+
 export const unclaimPrrr = (prrrId) => {
   emit('unclaimPrrr', {prrrId})
 }

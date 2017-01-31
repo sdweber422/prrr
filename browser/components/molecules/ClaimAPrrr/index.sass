@@ -13,7 +13,9 @@
     background-color: DarkTurquoise
     height: inherit
     max-height: 100%
-    &-Buttons
+    &-deadline
+      align-self: center
+    &-buttons
       display: flex
       flex-direction: column
       justify-content: center
@@ -33,8 +35,9 @@
   .Button
     display: block
     width: 200px
-    &:first-child
-      margin-bottom: 0.25em
+    margin-bottom: 0.25em
+    &:last-child
+      margin-bottom: 0
 
   .ReviewButton
     background: DarkTurquoise
