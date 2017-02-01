@@ -2,6 +2,7 @@ import knex from '../knex'
 import Queries from '../queries'
 import Github from '../Github'
 import request from 'request-promise'
+import logger from '../logger'
 
 export default class Commands {
 
