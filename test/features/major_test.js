@@ -109,8 +109,8 @@ describe.only('selenium scenarios', function(){
           .then(_ => player.shouldSeeWithin('AbrahamFergie/Obeisant-Gecko/pull/6', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/41', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
-          .then(_ => player.shouldNotSeeWithin('popcorn', By.css('table.MyRequestedPrrrs')))
-          // .then(_ => player.shouldNotSeeWithin('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
+          .then(_ => player.shouldNotSeeWithin('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
+          // .then(_ => player.shouldNotSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
           .then(_ => coach.shouldSee('Pending Prrrs: 2'))
           //player notices that current pull request is under my requested prrrs with pull request address and request by information and opens links
           //coach claims a pull request
@@ -118,6 +118,7 @@ describe.only('selenium scenarios', function(){
           //finds tabs as they open
           .then(_ => coach.shouldSeePopupAt('https://github.com/AbrahamFergie/hibbityDibbity.com/pull/42'))
 
+          .then(_ => player.sleep(5000))
 
 
           // .then(_ => coach.wait(coach.identifyTabPopup(), 2000))

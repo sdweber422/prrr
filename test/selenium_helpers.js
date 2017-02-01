@@ -177,20 +177,13 @@ const Browser = function(){
   }
 
   browser.shouldNotSeeWithin = function(text, element, timeout=2000){
-    const _this = this
-    return new Promise(function (resolve, reject) {
-      _this.wait(until.elementTextContains(_this.findElement(element), text), timeout)
-      .then(results => {
-        if(results) {
-          reject(new Error(`expected ${element} to not contain text: ${JSON.stringify(text)}`))
+    return this.wait(until.elementTextContains(this.findElement(element), text), timeout)
+      .then(function(error) { if(error) throw new Error(`${text} exists on the page and therefore fails this test`)}, function (result) {
+        if(result) {
+          Promise.resolve()
         }
-        else resolve()
       })
-      // .catch(resolve().then(_ => console.log('catch statement~~~~~~~~~~')))
-    })
   }
-
-
   return browser
 }
 
