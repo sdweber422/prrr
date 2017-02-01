@@ -58,19 +58,55 @@ const Browser = function(){
       })
   }
 
-  browser.checkNumberOfTabs = function() {
-    return this.getAllWindowHandles()
-      .then(handles => handles.length < 2)
+  // browser.checkNumberOfTabs = function() {
+  //   return this.getAllWindowHandles()
+  //     .then(handles => handles.length < 2)
+  // }
+
+  // browser.identifyTabPopup = function() {
+  //   return this.checkNumberOfTabs()
+  //     .then(condition => {
+  //         if (condition){
+  //           return new Promise((resolve, reject) => setTimeout(function(){resolve()}, 1000))
+  //         }else{
+  //           setTimeout(function(){this.identifyTabPopup()}, 100)
+  //         }
+  //     })
+  // }
+
+  browser.shouldSee = function(text, timeout=2000){
+    const body = this.findElement(By.css('body'));
+    return this.wait(until.elementTextContains(body, text), timeout)
+      .catch(error => {
+        throw new Error(`expected page to contain text: ${JSON.stringify(text)}`)
+      })
   }
 
-  browser.identifyTabPopup = function() {
-    return this.checkNumberOfTabs()
-      .then(condition => {
-          if(condition){
-            return new Promise((resolve, reject) => setTimeout(function(){resolve()}, 1000))
-          }else{
-            setTimeout(function(){this.identifyTabPopup()}, 100)
-          }
+  browser.shouldSeeWithin = function(text, element, timeout=2000){
+    return this.wait(until.elementTextContains(this.findElement(element), text), timeout)
+      .catch(error => {
+        throw new Error(`expected ${element} to contain text: ${JSON.stringify(text)}`)
+      })
+  }
+
+  browser.getWindowUrls = function(){
+    return this.getAllWindowHandles().then(windows => {
+      const urls = windows.map(windowHandle => {
+        this.switchTo().window(windowHandle)
+        return this.getCurrentUrl()
+      })
+      return Promise.all(urls)
+    })
+  }
+
+  browser.shouldSeePopupAt = function(url, timeout=2000){
+    if (timeout <= 0) throw new Error(`failed to find popup at ${url}`)
+    return this.getWindowUrls()
+      .then(urls => {
+        console.log('URLS', urls)
+        if (urls.includes(url)) return true;
+        return this.sleep(100)
+          .then(_ => this.shouldSeePopupAt(url, timeout-100))
       })
   }
 
@@ -138,6 +174,7 @@ const setupSelenium = function(done) {
   this.createBrowser = function(position){
     const browser = Browser()
     if (position === 'right') browser.manage().window().setPosition(950, 0)
+    browser.manage().window().setSize(1600, 1200)
     this.browsers.push(browser)
     return browser
   }
