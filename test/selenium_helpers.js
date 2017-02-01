@@ -136,13 +136,15 @@ const Browser = function(){
       ), 2000
     ).click()
   }
+
+
   browser.findByXPATH = function(textClassnameValueOrHref){
     const paths = [
       `self::button[contains(.,'${textClassnameValueOrHref}')]`,
-      `self::button[ancestor::h1[contains(.,'${textClassnameValueOrHref}')]]`,
-      `self::span[contains(.,'${textClassnameValueOrHref}')]`,
+      // `self::button[ancestor::h1[contains(.,'${textClassnameValueOrHref}')]]`,
+      // `self::span[contains(.,'${textClassnameValueOrHref}')]`,
       `self::input[@value='${textClassnameValueOrHref}']`,
-      `self::button[ancestor::table[@class='${textClassnameValueOrHref}']]`,
+      // `self::button[ancestor::table[@class='${textClassnameValueOrHref}']]`,
       `self::a[contains(.,'${textClassnameValueOrHref}')]`
     ]
     return this.wait(
@@ -152,7 +154,21 @@ const Browser = function(){
     )
   }
 
-  browser.clickOn = function(xpath){
+  browser.clickOn = function(text){
+    const paths = [
+      // button containing that text
+      // a with an href attribute contianing that text
+      // input type=submit value=text
+
+
+
+      `self::button[contains(.,'${textClassnameValueOrHref}')]`,
+      // `self::button[ancestor::h1[contains(.,'${textClassnameValueOrHref}')]]`,
+      // `self::span[contains(.,'${textClassnameValueOrHref}')]`,
+      `self::input[@value='${textClassnameValueOrHref}']`,
+      // `self::button[ancestor::table[@class='${textClassnameValueOrHref}']]`,
+      `self::a[contains(.,'${textClassnameValueOrHref}')]`
+    ]
     return this.findByXPATH(xpath).click()
   }
 
