@@ -118,7 +118,6 @@ const Browser = function(){
       `self::div[@class='${textOrClassname}']`,
       `self::h2[@class='${textOrClassname}']`
     ]
-    // console.log('PATHS_+__+_++_+__++_+_+|_++___+_+__', paths)
     let text = this.wait(until.elementLocated(By.xpath(`//*[${paths[0]} or ${paths[1]} or ${paths[2]} or ${paths[3]} or ${paths[4]}]`)), 2000).getText()
     return text
   }
@@ -149,7 +148,7 @@ const Browser = function(){
     ]
     return this.wait(
       until.elementLocated(
-        By.xpath(`//*[${paths[0]} or ${paths[1]} or ${paths[2]} or ${paths[3]} or ${paths[4]} or ${paths[5]}]`)
+        By.xpath(`//*[${paths.join(' or ')}]`)
       ), 2000
     )
   }
@@ -159,18 +158,32 @@ const Browser = function(){
       // button containing that text
       // a with an href attribute contianing that text
       // input type=submit value=text
-
-
-
-      `self::button[contains(.,'${textClassnameValueOrHref}')]`,
-      // `self::button[ancestor::h1[contains(.,'${textClassnameValueOrHref}')]]`,
-      // `self::span[contains(.,'${textClassnameValueOrHref}')]`,
-      `self::input[@value='${textClassnameValueOrHref}']`,
-      // `self::button[ancestor::table[@class='${textClassnameValueOrHref}']]`,
-      `self::a[contains(.,'${textClassnameValueOrHref}')]`
+      `self::button[contains(.,'${text}')]`,
+      `self::input[@value='${text}']`,
+      `self::a[(contains(.,'${text}')) and (@href)]`
     ]
-    return this.findByXPATH(xpath).click()
+    return this.wait(
+      until.elementLocated(
+        By.xpath(`//*[${paths.join(' or ')}]`)
+      ), 2000
+    ).click()
   }
+
+  browser.archiveMyRequestedPrrr = function(pullRequestText, element){
+    return this.wait(until.elementLocated(element))
+      .then(table => table.findElement(By.xpath(`//tr[contains(.,'${pullRequestText}')]`)))
+      .then(tr => tr.findElement(By.className('ArchivePrrrButton')))
+      .then(archivePrrrButton => archivePrrrButton.click())
+  }
+
+  browser.shouldNotSeeWithin = function(text, element, timeout=2000){
+    this.wait(until.elementTextContains(this.findElement(element), text), timeout)
+      .catch(error => {
+        return new Error(`expected ${element} to contain text: ${JSON.stringify(text)}`)
+      })
+      return new Error(`expected ${element} to contain not text: ${JSON.stringify(text)}`)
+  }
+
 
   return browser
 }

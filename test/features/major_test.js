@@ -85,7 +85,7 @@ describe.only('selenium scenarios', function(){
           .then(_ => coach.shouldSee('Fabien Potencier'))
           // player archives a Prrr
           // .then(_ => player.clickOn('PrrrsTable MyRequestedPrrrs'))
-          .then(_ => archiveMyRequestedPrrr(player, 'AbrahamFergie/Archive.com/pull/46'))
+          .then(_ => player.archiveMyRequestedPrrr('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.switchTo().alert().getText())
           .then(text => {
             expect(text).to.include('Are you sure you want to archive your')
@@ -109,6 +109,7 @@ describe.only('selenium scenarios', function(){
           .then(_ => player.shouldSeeWithin('AbrahamFergie/Obeisant-Gecko/pull/6', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/41', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
+          .then(_ => player.shouldNotSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
           // .then(_ => player.shouldNotSeeWithin('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
           .then(_ => coach.shouldSee('Pending Prrrs: 2'))
           //player notices that current pull request is under my requested prrrs with pull request address and request by information and opens links
@@ -172,16 +173,8 @@ describe.only('selenium scenarios', function(){
           // .then(_ => player.getTheText('MetricsPage-header'))
           // .then(data => expect(data).to.eql('Metrics For: 2017-01-16'))
           // .then(_ => this.waitForAllBrowsers())
-          .then(_ => player.sleep(982000) )
+          .then(_ => player.sleep(2000) )
       })
     })
   })
 })
-
-
-const archiveMyRequestedPrrr = (actor, pullRequestText) => {
-  return actor.wait(until.elementLocated(By.css('table.MyRequestedPrrrs')))
-    .then(table => table.findElement(By.xpath(`//tr[contains(.,'${pullRequestText}')]`)))
-    .then(tr => tr.findElement(By.className('ArchivePrrrButton')))
-    .then(archivePrrrButton => archivePrrrButton.click())
-}
