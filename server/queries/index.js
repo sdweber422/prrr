@@ -91,14 +91,6 @@ export default class Queries {
       .first()
   }
 
-  getPrrrById(prrrId){
-    return this.knex
-      .select('*')
-      .from('pull_request_review_requests')
-      .where('id', prrrId)
-      .first()
-  }
-
   getPrrrForPullRequest(pullRequest){
     return this.knex
       .select('*')
@@ -108,18 +100,6 @@ export default class Queries {
         repo: pullRequest.base.repo.name,
         number: pullRequest.number,
       })
-      .first()
-  }
-
-  getPullRequest({owner, repo, number}){
-    return this.github.pullRequests.get({owner, repo, number})
-  }
-
-  getRequestorForPrrr(prrr){
-    return knex
-      .select('*')
-      .from('users')
-      .where('github_username', prrr.requested_by)
       .first()
   }
 
