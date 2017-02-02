@@ -34,8 +34,8 @@ describe.only('selenium scenarios', function(){
                   repo: 'hibbityDibbity.com',
                   number: 42,
                   requested_by: 'countChocula',
-                  created_at: '2017-01-18 15:29:22.979-08',
-                  updated_at: '2017-01-18 15:29:22.979-08'
+                  created_at: '2017-01-18 16:29:22.979-08',
+                  updated_at: '2017-01-18 16:29:22.979-08'
                 },
                 {
                   owner: 'AbrahamFergie',
@@ -84,7 +84,6 @@ describe.only('selenium scenarios', function(){
           //coach should see their name
           .then(_ => coach.shouldSee('Fabien Potencier'))
           // player archives a Prrr
-          // .then(_ => player.clickOn('PrrrsTable MyRequestedPrrrs'))
           .then(_ => player.archiveMyRequestedPrrr('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.switchTo().alert().getText())
           .then(text => {
@@ -99,8 +98,7 @@ describe.only('selenium scenarios', function(){
           .then(_ => player.clickOn('Add a Prrr'))
           //player pastes pull request url into text box
           .then(_ => {
-            player.findElement(By.className('RequestReviewPage-InputBox'))
-              .sendKeys('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6')
+            player.insertPullRequestAddress('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6', By.css('input.RequestReviewPage-InputBox'))
           })
           // player creates the new Prrr
           .then(_ => player.clickOn('Add Prrr'))
@@ -117,32 +115,51 @@ describe.only('selenium scenarios', function(){
           .then(_ => coach.clickOn('Review a PR'))
           //finds tabs as they open
           .then(_ => coach.shouldSeePopupAt('https://github.com/AbrahamFergie/hibbityDibbity.com/pull/42'))
-
-          .then(_ => player.sleep(5000))
-
-
-          // .then(_ => coach.wait(coach.identifyTabPopup(), 2000))
-          // //closes said tabs
-          // .then(_ => coach.wait(coach.closeTabs(), 2000))
-          // //coach then decides to unclaim Prrr and should see 2 pending Prrrs again
-          // .then(_ => coach.clickOn('Unclaim'))
-          // .then(_ => coach.getTheText('Pending Prrrs: 2'))
-          // .then(text => expect(text).to.eql('Pending Prrrs: 2'))
-          // //coach decides to claim Prrr again
-          // .then(_ => coach.clickOn('Review a PR'))
-          // //finds tabs as they open
-          // .then(_ => coach.wait(coach.identifyTabPopup(), 2000))
-          // //closes said tabs
-          // .then(_ => coach.wait(coach.closeTabs(), 2000))
-          // //coach completes Prrr review upon a substantial inquiry into the pull request adding comments and smiley faces in appropriate places
-          // .then(_ => coach.clickOn('Complete'))
-          // //player sees that prrr has been completed
-          // .then(_ => player.findByXPATH('a few seconds ago'))
-          // // //coach toggles My Reviewed table
-          // .then(_ => coach.findByXPATH('a few seconds ago'))
+          .then(_ => player.shouldSeeWithin('There are currently no Pending Pull Request Review Requests from other Learners at this time. Check back later.', By.css('div.ClaimAPrrr-UserNeedsToClaimAPrrr-Unavailable')))
+          .then(_ => coach.identifyTabPopup())
+          //closes said tabs
+          .then(_ => coach.closeTabs())
+          .then(_ => coach.clickOn('Complete'))
+          //coach claims another pull request
+          .then(_ => coach.clickOn('Review a PR'))
+          //finds tabs as they open
+          .then(_ => coach.shouldSeePopupAt('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6'))
+          .then(_ => coach.identifyTabPopup())
+          //closes said tabs
+          .then(_ => coach.closeTabs())
+          //coach then decides to abandon Prrr and should see 1 pending Prrrs again
+          .then(_ => coach.clickOn('Abandon'))
+          .then(_ => coach.shouldSee('Pending Prrrs: 1'))
+          //coach decides to claim Prrr again
+          .then(_ => coach.clickOn('Review a PR'))
+          .then(_ => coach.shouldSeePopupAt('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6'))
+          //finds tabs as they open
+          .then(_ => coach.identifyTabPopup())
+          //closes said tabs
+          .then(_ => coach.closeTabs())
+          //coach should see the timer and other elements relating to the claimed pull request
+          .then(_ => coach.shouldSeeWithin('00:59:59', By.css('div.Timer')))
+          .then(_ => coach.shouldSeeWithin('Reviewing:', By.css('div.ClaimAPrrr-UserClaimedAPrrr')))
+          // .then(_ => coach.shouldSeeWithin('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6', By.css('div.ClaimAPrrr-UserClaimedAPrrr//a')))
+          // For: AbrahamFergie Requested: a few seconds ago https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6
+          .then(_ => player.sleep(4040404))
+          //coach completes Prrr review upon a substantial inquiry into the pull request adding comments and smiley faces in appropriate places
+          .then(_ => coach.clickOn('Complete'))
+          .then(_ => coach.shouldSee('There are currently no Pending Pull Request Review Requests from other Learners at this time. Check back later.'))
+          .then(_ => coach.shouldSeeWithin('AbrahamFergie/Obeisant-Gecko/pull/6', By.css('table.MyReviewedPrrrs')))
+          .then(_ => coach.shouldSeeWithin('AbrahamFergie/hibbityDibbity.com/pull/42', By.css('table.MyReviewedPrrrs')))
+          .then(_ => coach.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyReviewedPrrrs')))
+          .then(_ => coach.shouldSeeWithin('by AbrahamFergie a few seconds ago', By.css('table.MyReviewedPrrrs')))
+          .then(_ => coach.shouldSeeWithin('by countChocula', By.css('table.MyReviewedPrrrs')))
+          .then(_ => coach.shouldSeeWithin('by AbrahamFergie', By.css('table.MyReviewedPrrrs')))
+          .then(_ => player.shouldSeeWithin('a few seconds ago', By.css('table.MyRequestedPrrrs')))
+          //player sees that prrr has been completed
+          // //coach toggles My Reviewed table
+          // .then(_ => coach.shouldSeeWithin('a few seconds ago'))
           // .then(_ => coach.clickOn('My Reviewed Prrrs'))
-          // //coach toggles My Reviewed table again
+          //coach toggles My Reviewed table again
           // .then(_ => coach.clickOn('My Reviewed Prrrs'))
+          .then(_ => player.sleep(500000))
           // //player goes to the metrics page
           // .then(_ => player.visit('/metrics/2017-01-18'))
           // //player then verifies that all the data on the page is correct

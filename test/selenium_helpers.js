@@ -58,21 +58,22 @@ const Browser = function(){
       })
   }
 
-  // browser.checkNumberOfTabs = function() {
-  //   return this.getAllWindowHandles()
-  //     .then(handles => handles.length < 2)
-  // }
+  browser.checkNumberOfTabs = function() {
+    return this.getAllWindowHandles()
+      .then(handles => handles.length < 2)
+  }
 
-  // browser.identifyTabPopup = function() {
-  //   return this.checkNumberOfTabs()
-  //     .then(condition => {
-  //         if (condition){
-  //           return new Promise((resolve, reject) => setTimeout(function(){resolve()}, 1000))
-  //         }else{
-  //           setTimeout(function(){this.identifyTabPopup()}, 100)
-  //         }
-  //     })
-  // }
+  browser.identifyTabPopup = function(timeout=2000) {
+    if(timeout <= 0) throw new Error('Out of time')
+    const _this = this
+    return this.checkNumberOfTabs()
+      .then(condition => {
+          if (condition) return Promise.resolve()
+          else{
+            setTimeout(function(){_this.identifyTabPopup(timeout-100)}, 100)
+          }
+      })
+  }
 
   browser.shouldSee = function(text, timeout=2000){
     const body = this.findElement(By.css('body'));
@@ -89,6 +90,15 @@ const Browser = function(){
       })
   }
 
+  browser.shouldNotSeeWithin = function(text, element, timeout=2000){
+    return this.wait(until.elementTextContains(this.findElement(element), text), timeout)
+    .then(function(error) { if(error) throw new Error(`${text} exists on the page and therefore fails this test`)}, function (result) {
+      if(result) {
+        Promise.resolve()
+      }
+    })
+  }
+
   browser.getWindowUrls = function(){
     return this.getAllWindowHandles().then(windows => {
       const urls = windows.map(windowHandle => {
@@ -103,61 +113,14 @@ const Browser = function(){
     if (timeout <= 0) throw new Error(`failed to find popup at ${url}`)
     return this.getWindowUrls()
       .then(urls => {
-        console.log('URLS', urls)
         if (urls.includes(url)) return true;
         return this.sleep(100)
           .then(_ => this.shouldSeePopupAt(url, timeout-100))
       })
   }
 
-  browser.getTheText = function(textOrClassname){
-    const paths = [
-      `self::h1[contains(., '${textOrClassname}')]`,
-      `self::span[preceding::strong[contains(.,'${textOrClassname}')]]`,
-      `self::div[@class='${textOrClassname}']`,
-      `self::div[@class='${textOrClassname}']`,
-      `self::h2[@class='${textOrClassname}']`
-    ]
-    let text = this.wait(until.elementLocated(By.xpath(`//*[${paths[0]} or ${paths[1]} or ${paths[2]} or ${paths[3]} or ${paths[4]}]`)), 2000).getText()
-    return text
-  }
-
-  browser.getTheValue = function(text){
-    let value = this.wait(until.elementLocated(By.className(text)), 2000).getAttribute('value')
-    return value
-  }
-
-  browser.clickByClassName = function(classname){
-    return this.wait(
-      until.elementLocated(
-        By.className(
-          classname)
-      ), 2000
-    ).click()
-  }
-
-
-  browser.findByXPATH = function(textClassnameValueOrHref){
-    const paths = [
-      `self::button[contains(.,'${textClassnameValueOrHref}')]`,
-      // `self::button[ancestor::h1[contains(.,'${textClassnameValueOrHref}')]]`,
-      // `self::span[contains(.,'${textClassnameValueOrHref}')]`,
-      `self::input[@value='${textClassnameValueOrHref}']`,
-      // `self::button[ancestor::table[@class='${textClassnameValueOrHref}']]`,
-      `self::a[contains(.,'${textClassnameValueOrHref}')]`
-    ]
-    return this.wait(
-      until.elementLocated(
-        By.xpath(`//*[${paths.join(' or ')}]`)
-      ), 2000
-    )
-  }
-
   browser.clickOn = function(text){
     const paths = [
-      // button containing that text
-      // a with an href attribute contianing that text
-      // input type=submit value=text
       `self::button[contains(.,'${text}')]`,
       `self::input[@value='${text}']`,
       `self::a[(contains(.,'${text}')) and (@href)]`
@@ -176,14 +139,11 @@ const Browser = function(){
       .then(archivePrrrButton => archivePrrrButton.click())
   }
 
-  browser.shouldNotSeeWithin = function(text, element, timeout=2000){
-    return this.wait(until.elementTextContains(this.findElement(element), text), timeout)
-      .then(function(error) { if(error) throw new Error(`${text} exists on the page and therefore fails this test`)}, function (result) {
-        if(result) {
-          Promise.resolve()
-        }
-      })
+  browser.insertPullRequestAddress = function(pullRequestText, element){
+    return this.wait(until.elementLocated(element), 2000).sendKeys(pullRequestText)
+      .catch(error => {throw new Error('No element found with that css selector')})
   }
+
   return browser
 }
 
