@@ -107,8 +107,9 @@ describe.only('selenium scenarios', function(){
           .then(_ => player.shouldSeeWithin('AbrahamFergie/Obeisant-Gecko/pull/6', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/41', By.css('table.MyRequestedPrrrs')))
           .then(_ => player.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
+          //player should not see archived prrr or prrr that has not been requested by them even if they are the owner of the repo
           .then(_ => player.shouldNotSeeWithin('AbrahamFergie/Archive.com/pull/46', By.css('table.MyRequestedPrrrs')))
-          // .then(_ => player.shouldNotSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyRequestedPrrrs')))
+          .then(_ => player.shouldNotSeeWithin('AbrahamFergie/hibbityDibbity.com/pull/42', By.css('table.MyRequestedPrrrs')))
           .then(_ => coach.shouldSee('Pending Prrrs: 2'))
           //player notices that current pull request is under my requested prrrs with pull request address and request by information and opens links
           //coach claims a pull request
@@ -127,71 +128,39 @@ describe.only('selenium scenarios', function(){
           .then(_ => coach.identifyTabPopup())
           //closes said tabs
           .then(_ => coach.closeTabs())
+          //coach should be able to see timer
+          .then(_ => coach.verifyElementIsVisible(By.css('div.Timer')))
           //coach then decides to abandon Prrr and should see 1 pending Prrrs again
+          //coach should see details relating to the claimed pull request
+          .then(_ => coach.shouldSeeWithin('Reviewing:\nAbrahamFergie/Obeisant-Gecko/pull/6', By.css('div.ClaimAPrrr-UserClaimedAPrrr')))
+          .then(_ => coach.shouldSeeWithin('For:\nAbrahamFergie\nRequested:\na few seconds ago', By.css('div.ClaimAPrrr-UserClaimedAPrrr')))
           .then(_ => coach.clickOn('Abandon'))
           .then(_ => coach.shouldSee('Pending Prrrs: 1'))
-          //coach decides to claim Prrr again
-          .then(_ => coach.clickOn('Review a PR'))
-          .then(_ => coach.shouldSeePopupAt('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6'))
-          //finds tabs as they open
-          .then(_ => coach.identifyTabPopup())
-          //closes said tabs
-          .then(_ => coach.closeTabs())
-          //coach should see the timer and other elements relating to the claimed pull request
-          .then(_ => coach.shouldSeeWithin('00:59:59', By.css('div.Timer')))
-          .then(_ => coach.shouldSeeWithin('Reviewing:', By.css('div.ClaimAPrrr-UserClaimedAPrrr')))
-          // .then(_ => coach.shouldSeeWithin('https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6', By.css('div.ClaimAPrrr-UserClaimedAPrrr//a')))
-          // For: AbrahamFergie Requested: a few seconds ago https://github.com/AbrahamFergie/Obeisant-Gecko/pull/6
-          .then(_ => player.sleep(4040404))
-          //coach completes Prrr review upon a substantial inquiry into the pull request adding comments and smiley faces in appropriate places
-          .then(_ => coach.clickOn('Complete'))
-          .then(_ => coach.shouldSee('There are currently no Pending Pull Request Review Requests from other Learners at this time. Check back later.'))
-          .then(_ => coach.shouldSeeWithin('AbrahamFergie/Obeisant-Gecko/pull/6', By.css('table.MyReviewedPrrrs')))
           .then(_ => coach.shouldSeeWithin('AbrahamFergie/hibbityDibbity.com/pull/42', By.css('table.MyReviewedPrrrs')))
           .then(_ => coach.shouldSeeWithin('AbrahamFergie/bloodThirsty.com/pull/43', By.css('table.MyReviewedPrrrs')))
-          .then(_ => coach.shouldSeeWithin('by AbrahamFergie a few seconds ago', By.css('table.MyReviewedPrrrs')))
           .then(_ => coach.shouldSeeWithin('by countChocula', By.css('table.MyReviewedPrrrs')))
-          .then(_ => coach.shouldSeeWithin('by AbrahamFergie', By.css('table.MyReviewedPrrrs')))
-          .then(_ => player.shouldSeeWithin('a few seconds ago', By.css('table.MyRequestedPrrrs')))
-          //player sees that prrr has been completed
-          // //coach toggles My Reviewed table
-          // .then(_ => coach.shouldSeeWithin('a few seconds ago'))
-          // .then(_ => coach.clickOn('My Reviewed Prrrs'))
+          //coach toggles My Reviewed table
+          .then(_ => coach.clickOn('My Reviewed Prrrs'))
           //coach toggles My Reviewed table again
-          // .then(_ => coach.clickOn('My Reviewed Prrrs'))
-          .then(_ => player.sleep(500000))
-          // //player goes to the metrics page
-          // .then(_ => player.visit('/metrics/2017-01-18'))
-          // //player then verifies that all the data on the page is correct
-          // .then(_ => player.getTheText('Total code reviews: '))
-          // .then(data => expect(parseInt(data)).to.be.a('number'))
-          // .then(_ => player.getTheText('Average time for PR to be claimed: '))
-          // .then(data => expect(data).to.be.a('string'))
-          // .then(_ => player.getTheText('Average time for PR to be completed: '))
-          // .then(data => expect(data).to.be.a('string'))
-          // .then(_ => player.getTheText('Total number of projects that requested reviews: '))
-          // .then(data => expect(parseInt(data)).to.be.a('number'))
-          // .then(_ => player.getTheText('Average number of reviews requested per project: '))
-          // .then(data => expect(parseInt(data)).to.be.a('number'))
-          // .then(_ => player.getTheText('MetricsPage-reviewers-total'))
-          // .then(data => expect(parseInt(data)).to.be.a('number'))
-          // .then(_ => player.getTheText('MetricsPage-reviewers-reviewer'))
-          // .then(data => expect(data).to.be.a('string'))
-          // //player verifies that week is week of January 16, 2017
-          // .then(_ => player.getTheText('MetricsPage-header'))
-          // .then(data => expect(data).to.eql('Metrics For: 2017-01-16'))
-          // //player navigates to previous week
-          // .then(_ => player.clickOn('last week'))
-          // //player expects previous week to be January 9, 2017
-          // .then(_ => player.getTheText('MetricsPage-header'))
-          // .then(data => expect(data).to.eql('Metrics For: 2017-01-09'))
-          // //player navigates to next week
-          // .then(_ => player.clickOn('next week'))
-          // //player expects next week is week of January 16, 2017
-          // .then(_ => player.getTheText('MetricsPage-header'))
-          // .then(data => expect(data).to.eql('Metrics For: 2017-01-16'))
-          // .then(_ => this.waitForAllBrowsers())
-          // .then(_ => player.sleep(2000) )
+          .then(_ => coach.clickOn('My Reviewed Prrrs'))
+          //player goes to the metrics page
+          .then(_ => player.visit('/metrics/2017-01-18'))
+          //player then verifies that all the data on the page is correct
+          .then(_ => player.shouldSee('Total code reviews: 2'))
+          .then(_ => player.shouldSee('Average time for PR to be claimed:'))
+          .then(_ => player.shouldSee('Average time for PR to be completed: 0 days and 0 hours and 29 minutes'))
+          .then(_ => player.shouldSee('Total number of projects that requested reviews: 1'))
+          .then(_ => player.shouldSee('Average number of reviews requested per project: 1.33'))
+          .then(_ => player.shouldSee('1\ncountChocula'))
+          //player verifies that week is week of January 16, 2017
+          .then(_ => player.shouldSee('Metrics For: 2017-01-16'))
+          //player navigates to previous week and expects week to be January 9, 2017
+          .then(_ => player.clickOn('last week'))
+          .then(_ => player.shouldSee('Metrics For: 2017-01-09'))
+          //player navigates to next week and expects week to be January 16, 2017
+          .then(_ => player.clickOn('next week'))
+          .then(_ => player.shouldSee('Metrics For: 2017-01-16'))
+          .then(_ => this.waitForAllBrowsers())
       })
     })
   })

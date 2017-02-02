@@ -122,6 +122,7 @@ const Browser = function(){
   browser.clickOn = function(text){
     const paths = [
       `self::button[contains(.,'${text}')]`,
+      `self::button[ancestor::h1[contains(.,'${text}')]]`,
       `self::input[@value='${text}']`,
       `self::a[(contains(.,'${text}')) and (@href)]`
     ]
@@ -144,6 +145,11 @@ const Browser = function(){
       .catch(error => {throw new Error('No element found with that css selector')})
   }
 
+  browser.verifyElementIsVisible = function(element){
+    return this.wait(until.elementLocated(element))
+    .catch(error => {throw new Error('This element is not visible on the page')})
+  }
+
   return browser
 }
 
@@ -161,7 +167,7 @@ const setupSelenium = function(done) {
   this.browsers = []
   this.createBrowser = function(position){
     const browser = Browser()
-    if (position === 'right') browser.manage().window().setPosition(950, 0)
+    if (position === 'right') browser.manage().window().setPosition(550, 0)
     browser.manage().window().setSize(1600, 1200)
     this.browsers.push(browser)
     return browser
